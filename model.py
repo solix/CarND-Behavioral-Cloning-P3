@@ -16,8 +16,16 @@ for index, row in reader.iterrows():
     imgs.append(img)
     labels.append(steering)
 
-X_train = np.array(imgs)
-y_train = np.array(labels)
+augmented_images , augmented_measurements = [],[]
+
+for image , mesure in zip(imgs,labels):
+    augmented_images.append(image)
+    augmented_measurements.append(mesure)
+    augmented_images.append(cv2.flip(image,1))
+    augmented_measurements.append(mesure*-1.0)
+
+X_train = np.array(augmented_images)
+y_train = np.array(augmented_measurements)
 
 
 from keras.models import Sequential
