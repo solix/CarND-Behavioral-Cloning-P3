@@ -52,8 +52,7 @@ flags.DEFINE_integer('epochs', 10, "The number of epochs.")
 flags.DEFINE_integer('batch_size', 60, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
-for x in np.nditer(X_train):
-    x = tf.image.resize_images(x, (66, 200))
+x_train = X_train.reshape(X_train,[-1,66,200,3])
 
 def main(_):
      #inspired from Nvidia
