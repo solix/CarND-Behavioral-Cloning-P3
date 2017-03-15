@@ -36,8 +36,6 @@ y_train = np.array(augmented_measurements)
 
 x_train = X_train.astype('float32')
 
-X_train, y_train = shuffle(X_train, y_train)
-
 print(len(x_train), 'train sequences')
 print(len(y_train), 'test sequences')
 
