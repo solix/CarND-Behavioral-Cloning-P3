@@ -43,7 +43,7 @@ print(len(y_train), 'number of labeled data')
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda,Dropout,Cropping2D, Reshape,Activation
 from keras.optimizers import Adam
-from keras.layers.convolutional import Convolution2D,MaxPooling2D
+from keras.layers.convolutional import Convolution2D,MaxPooling2D,ZeroPadding2D
 
 #define flags for epoch and batchsize
 flags = tf.app.flags
@@ -60,23 +60,24 @@ def main(_):
     model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
     model.add(Lambda(lambda x: tf.image.resize_images(x, (66, 200))))
-    print(model.output)
+    print(model.output) #shape=(?, 66, 200, 3)
     model.add(Convolution2D(3,5,5,activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
-    print(model.output)
+    print(model.output) #shape=(?, 31, 98, 3) wl=24 output = 31 x 98
     model.add(Convolution2D(24, 5, 5, activation='relu'))
+    model.add(ZeroPadding2D())
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
-    print(model.output)
+    print(model.output)#shape=(?, 13, 47, 24) wl=36 output = 14 x 47
     model.add(Convolution2D(36, 5, 5, activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
-    print(model.output)
+    print(model.output)#shape=(?, 4, 21, 36)  output = 5x22
     model.add(Convolution2D(48, 3, 3, activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
-    print(model.output)
+    print(model.output) #shape=(?, 1, 9, 48) output = 3 x 20
     model.add(Convolution2D(64, 3, 3, activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
