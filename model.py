@@ -85,7 +85,7 @@ def main(_):
     print(model.output)
     model.add(Flatten())
     print(model.output)
-    model.add(Dense(1408))
+    model.add(Dense(1152))
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(100))
