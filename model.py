@@ -97,11 +97,13 @@ def main(_):
     model.add(Dense(10))
     model.add(Activation('relu'))
     model.add(Dense(1))
-    model.add(Activation('softmax'))
 
 
 
-    model.compile(loss = 'sparse_categorical_crossentropy' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    print("Model summary:\n", model.summary())
+
+
     model.fit(X_train, y_train, validation_split = 0.3, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
     model.save('model.h5')
 
