@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 import cv2
 import tensorflow as tf
+from sklearn.utils import shuffle
+from keras import backend as K
+
+
 
 
 
@@ -30,11 +34,16 @@ for image , mesure in zip(imgs,labels):
 X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
+x_train = X_train.astype('float32')
 
+X_train, y_train = shuffle(X_train, y_train)
+
+print(len(x_train), 'train sequences')
+print(len(y_train), 'test sequences')
 
 #Model
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda,Dropout,Cropping2D
+from keras.layers import Flatten, Dense, Lambda,Dropout,Cropping2D, Reshape,Activation
 from keras.optimizers import Adam
 from keras.layers.convolutional import Convolution2D,MaxPooling2D
 
@@ -47,19 +56,45 @@ flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
 def main(_):
-
+     #inspired from Nvidia
+    print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))
-    model.add(Convolution2D(6,3,3,activation='relu'))
+    model.add(Convolution2D(3,5,5,activation='relu'))
     model.add(MaxPooling2D())
+    model.add(Dropout(0.25))
+    model.add(Convolution2D(24, 5, 5, activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.25))
+    model.add(Convolution2D(36, 5, 5, activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.25))
+    model.add(Convolution2D(48, 3, 3, activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.25))
+    model.add(Convolution2D(64, 3, 3, activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(240))
-    model.add(Dense(120))
+    model.add(Dense(1164))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(100))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(50))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(10))
+    model.add(Activation('relu'))
     model.add(Dense(1))
+    model.add(Activation('softmax'))
 
-    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate))
-    model.fit(X_train, y_train, validation_split = 0.2, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
+
+
+    model.compile(loss = 'categorical_crossentropy' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    model.fit(X_train, y_train, validation_split = 0.3, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
     model.save('model.h5')
 
 
