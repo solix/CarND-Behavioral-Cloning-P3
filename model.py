@@ -52,7 +52,6 @@ flags.DEFINE_integer('epochs', 10, "The number of epochs.")
 flags.DEFINE_integer('batch_size', 60, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
-x_train = X_train.reshape(X_train.shape[0],66,200,X_train.shape[3])
 
 def main(_):
      #inspired from Nvidia
