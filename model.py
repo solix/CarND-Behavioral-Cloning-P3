@@ -101,7 +101,7 @@ def main(_):
 
 
 
-    model.compile(loss = 'categorical_crossentropy' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    model.compile(loss = 'sparse_categorical_crossentropy' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
     model.fit(X_train, y_train, validation_split = 0.3, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
     model.save('model.h5')
 
