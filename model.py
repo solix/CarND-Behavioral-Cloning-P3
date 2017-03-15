@@ -34,8 +34,6 @@ for image , mesure in zip(imgs,labels):
 X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
-X_train = np.reshape(X_train,[len(X_train),66,200,3])
-
 x_train = X_train.astype('float32')
 
 print(len(x_train), 'number of training data features')
