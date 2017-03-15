@@ -81,7 +81,6 @@ def main(_):
     model.add(Dropout(0.25))
     print(model.output) #shape=(?, 1, 9, 48) output = 3 x 20
     model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(MaxPooling2D())
     model.add(Dropout(0.25))
     print(model.output)
     model.add(Flatten())
