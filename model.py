@@ -43,7 +43,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_integer('epochs', 10, "The number of epochs.")
 flags.DEFINE_integer('batch_size', 60, "The batch size.")
-flags.DEFINE_integer('learning_rate', 0.0001, "The batch size.")
+flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
 def main(_):
