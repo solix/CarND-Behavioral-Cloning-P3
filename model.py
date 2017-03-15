@@ -60,6 +60,7 @@ def main(_):
     model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
     model.add(Lambda(lambda x: tf.image.resize_images(x, (66, 200))))
+    print(model.output)
     model.add(Convolution2D(3,5,5,activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
