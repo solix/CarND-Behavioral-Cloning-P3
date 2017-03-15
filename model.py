@@ -46,18 +46,20 @@ flags.DEFINE_integer('batch_size', 60, "The batch size.")
 flags.DEFINE_integer('learning_rate', 0.0001, "The batch size.")
 
 
-model = Sequential()
-model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
-model.add(Convolution2D(6,3,3,activation='relu'))
-model.add(MaxPooling2D())
-model.add(Flatten())
-model.add(Dense(240))
-model.add(Dense(120))
-model.add(Dense(1))
+def main(_):
 
-model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate))
-model.fit(X_train, y_train, validation_split = 0.2, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
-model.save('model.h5')
+    model = Sequential()
+    model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
+    model.add(Convolution2D(6,3,3,activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Flatten())
+    model.add(Dense(240))
+    model.add(Dense(120))
+    model.add(Dense(1))
+
+    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate))
+    model.fit(X_train, y_train, validation_split = 0.2, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
+    model.save('model.h5')
 
 
 if __name__ == '__main__':
