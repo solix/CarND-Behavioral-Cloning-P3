@@ -76,7 +76,7 @@ def main(_):
     model.add(Dropout(0.25))
     print(model.output)#shape=(?, 5, 22, 36)  output = 5x22
     model.add(Convolution2D(48, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D(((1, 1), (1, 1))))
+    model.add(ZeroPadding2D(((1, 1))))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
     print(model.output) #shape=(?, 1, 9, 48) output = 3 x 20
