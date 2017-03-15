@@ -34,6 +34,8 @@ for image , mesure in zip(imgs,labels):
 X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
+X_train = np.reshape(X_train,[X_train.shape[0],66,200,3])
+
 x_train = X_train.astype('float32')
 
 print(len(x_train), 'number of training data features')
@@ -64,10 +66,8 @@ def main(_):
     model.add(Dropout(0.25))
     model.add(Convolution2D(24, 5, 5, activation='relu'))
     model.add(MaxPooling2D())
-    model.add(Dropout(0.25))
     model.add(Convolution2D(36, 5, 5, activation='relu'))
     model.add(MaxPooling2D())
-    model.add(Dropout(0.25))
     model.add(Convolution2D(48, 3, 3, activation='relu'))
     model.add(MaxPooling2D())
     model.add(Dropout(0.25))
