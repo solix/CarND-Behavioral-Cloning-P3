@@ -20,6 +20,7 @@ for index, row in reader.iterrows():
     file_path = './data/' + row['center']
     img = cv2.imread(file_path)
     steering = float(row['steering'])
+    img = cv2.resize(img, (66, 200)).astype(np.float32)
     imgs.append(img)
     labels.append(steering)
 
@@ -28,16 +29,14 @@ augmented_images , augmented_measurements = [],[]
 for image , mesure in zip(imgs,labels):
     augmented_images.append(image)
     augmented_measurements.append(mesure)
-    image = cv2.resize(image, (66, 200))
     augmented_images.append(cv2.flip(image,1))
     augmented_measurements.append(mesure*-1.0)
 
 X_train = np.array(augmented_images)
 y_train = np.array(augmented_measurements)
 
-x_train = X_train.astype('float32')
 
-print(len(x_train), 'number of training data features')
+print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of labeled data')
 
 #Model
