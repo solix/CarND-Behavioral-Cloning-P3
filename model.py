@@ -28,6 +28,7 @@ augmented_images , augmented_measurements = [],[]
 for image , mesure in zip(imgs,labels):
     augmented_images.append(image)
     augmented_measurements.append(mesure)
+    image = cv2.resize(image, (66, 200)).astype(np.float32)
     augmented_images.append(cv2.flip(image,1))
     augmented_measurements.append(mesure*-1.0)
 
@@ -57,9 +58,9 @@ def main(_):
      #inspired from Nvidia
     print('Build model...')
     model = Sequential()
-    model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
+    model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (66,200,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
-    model.add(Lambda(lambda x: cv2.resize(x, (66, 200)).astype(np.float32)))
+    # model.add(Lambda(lambda x: cv2.resize(x, (66, 200)).astype(np.float32)))
     print(model.output) #shape=(?, 66, 200, 3)
     model.add(Convolution2D(3,5,5,activation='relu'))
     model.add(MaxPooling2D())
