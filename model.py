@@ -39,8 +39,6 @@ x_train = X_train.astype('float32')
 print(len(x_train), 'number of training data features')
 print(len(y_train), 'number of labeled data')
 
-new_shape = (160,200,3)
-X_train= np.empty(shape=(X_train.shape[0],66,200,3))
 #Model
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda,Dropout,Cropping2D, Reshape,Activation
@@ -59,8 +57,9 @@ def main(_):
      #inspired from Nvidia
     print('Build model...')
     model = Sequential()
-    model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (66,200,3)))
+    model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
+    model.add(Lambda(lambda x: cv2.resize(x, (66, 200))))
     print(model.output) #shape=(?, 66, 200, 3)
     model.add(Convolution2D(3,5,5,activation='relu'))
     model.add(MaxPooling2D())
