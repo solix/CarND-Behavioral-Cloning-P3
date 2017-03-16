@@ -15,15 +15,17 @@ type(reader)
 
 imgs = []
 labels = []
+rows = ['center', 'left', 'right']
 for index, row in reader.iterrows():
     # print(row['center'], row['steering'])
-    file_path = './data/' + row['center']
-    img = cv2.imread(file_path)
+    for i in range(3):
+	file_path = './data/' + row[i]
+    	img = cv2.imread(file_path)
+        imgs.append(img)
     steering = float(row['steering'])
-    img = cv2.resize(img, (66, 200)).astype(np.float32)
-    imgs.append(img)
     labels.append(steering)
-
+    labels.append(steering*0.1)
+    labels.append(steering*-0.1)
 augmented_images , augmented_measurements = [],[]
 
 for image , mesure in zip(imgs,labels):
@@ -58,49 +60,30 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (66,200,3)))
-    model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
-    # model.add(Lambda(lambda x: cv2.resize(x, (66, 200)).astype(np.float32)))
+    model.add(Cropping2D(cropping=((50,20),(0,0))))  # also supports shape inference using `-1` as dimension
     print(model.output) #shape=(?, 66, 200, 3)
-    model.add(Convolution2D(3,5,5,activation='relu'))
-    model.add(MaxPooling2D())
+    model.add(Convolution2D(3,5,5,sub_sample=(2,2),activation='relu'))
     model.add(Dropout(0.25))
-    print(model.output) #shape=(?, 31, 98, 3) wl=24 output = 31 x 98
-    model.add(Convolution2D(24, 5, 5, activation='relu'))
-    model.add(ZeroPadding2D((1,0)))
-    model.add(MaxPooling2D())
+    model.add(Convolution2D(24, 5, 5, sub_sample=(2,2), activation='relu'))
     model.add(Dropout(0.25))
-    print(model.output)#shape=(?, 14, 47, 24) wl=36 output = 14 x 47
-    model.add(Convolution2D(36, 5, 5, activation='relu'))
-    model.add(ZeroPadding2D((0, 1)))
-    model.add(MaxPooling2D())
+    model.add(Convolution2D(36, 5, 5,sub_sample = (2,2), activation='relu'))
     model.add(Dropout(0.25))
-    print(model.output)#shape=(?, 5, 22, 36)  output = 5x22
     model.add(Convolution2D(48, 3, 3, activation='relu' ,border_mode='same'))
-    model.add(ZeroPadding2D(((1, 9))))
-    model.add(MaxPooling2D())
     model.add(Dropout(0.25))
-    print(model.output) #shape=(?, 1, 9, 48) output = 3 x 20
     model.add(Convolution2D(64, 3, 3, activation='relu'))
     model.add(Dropout(0.25))
-    print(model.output)
     model.add(Flatten())
-    print(model.output)
-    model.add(Dense(1152))
-    model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(100))
-    model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(50))
-    model.add(Activation('relu'))
     model.add(Dropout(0.5))
     model.add(Dense(10))
-    model.add(Activation('relu'))
     model.add(Dense(1))
 
 
 
-    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) )
     print("Model summary:\n", model.summary())
 
 
