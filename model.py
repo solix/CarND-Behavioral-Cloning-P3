@@ -47,7 +47,7 @@ def generator():
         print(len(x_train), 'number of training data features')
         print(len(y_train), 'number of labeled data')
 
-        yield shuffle(X_train, y_train)
+        yield (X_train, y_train)
 
 #Model
 from keras.models import Sequential
