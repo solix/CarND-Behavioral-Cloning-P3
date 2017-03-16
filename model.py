@@ -20,7 +20,7 @@ for index, row in reader.iterrows():
         local_path = './data/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
-        img = cv2.imread(file_path)
+        img = cv2.imread(local_path)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
