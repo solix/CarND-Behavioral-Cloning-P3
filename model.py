@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import cv2
 import tensorflow as tf
+import os
 from sklearn.utils import shuffle
 from keras import backend as K
 
@@ -9,35 +10,44 @@ from keras import backend as K
 
 
 
-reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
-type(reader)
+#Generator
 
-imgs = []
-labels = []
-for index, row in reader.iterrows():
-    # print(row['center'], row['steering'])
-    file_path = './data/' + row['center']
-    img = cv2.imread(file_path)
-    steering = float(row['steering'])
-    imgs.append(img)
-    labels.append(steering)
+def generator():
+    while 1:
+        # Loop forever so the generator never terminates
 
-augmented_images , augmented_measurements = [],[]
+        reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
-for image , mesure in zip(imgs,labels):
-    augmented_images.append(image)
-    augmented_measurements.append(mesure)
-    augmented_images.append(cv2.flip(image,1))
-    augmented_measurements.append(mesure*-1.0)
+        type(reader)
 
-X_train = np.array(augmented_images)
-y_train = np.array(augmented_measurements)
+        imgs = []
+        labels = []
+        for index, row in reader.iterrows():
+            # print(row['center'], row['steering'])
+            file_path = './data/' + row['center']
+            img = cv2.imread(file_path)
+            steering = float(row['steering'])
+            imgs.append(img)
+            labels.append(steering)
 
-x_train = X_train.astype('float32')
+        augmented_images, augmented_measurements = [], []
 
-print(len(x_train), 'number of training data features')
-print(len(y_train), 'number of labeled data')
+        for image, mesure in zip(imgs, labels):
+            augmented_images.append(image)
+            augmented_measurements.append(mesure)
+            augmented_images.append(cv2.flip(image, 1))
+            augmented_measurements.append(mesure * -1.0)
+
+        X_train = np.array(augmented_images)
+        y_train = np.array(augmented_measurements)
+
+        x_train = X_train.astype('float32')
+
+        print(len(x_train), 'number of training data features')
+        print(len(y_train), 'number of labeled data')
+
+        yield shuffle(X_train, y_train)
 
 #Model
 from keras.models import Sequential
@@ -103,8 +113,8 @@ def main(_):
     model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
     print("Model summary:\n", model.summary())
 
-
-    model.fit(X_train, y_train, validation_split = 0.3, shuffle = True , nb_epoch = FLAGS.epochs , batch_size=FLAGS.batch_size )
+    model.fit_generator(generator(), samples_per_epoch=FLAGS.batch_size, nb_epoch=FLAGS.epoches,
+                         verbose=2, show_accuracy=True,  validation_data=None)
     model.save('model.h5')
 
 
