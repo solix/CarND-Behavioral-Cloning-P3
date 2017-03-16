@@ -113,7 +113,7 @@ def main(_):
     model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
     print("Model summary:\n", model.summary())
 
-    model.fit_generator(generator(), samples_per_epoch=FLAGS.batch_size, nb_epoch=FLAGS.epoches,
+    model.fit_generator(generator(), samples_per_epoch=FLAGS.batch_size, nb_epoch=FLAGS.epochs,
                          verbose=2, show_accuracy=True,  validation_data=None)
     model.save('model.h5')
 
