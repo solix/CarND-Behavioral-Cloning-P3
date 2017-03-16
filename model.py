@@ -17,8 +17,9 @@ for index, row in reader.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './data/IMG/' + row[i]
+        local_path = './data/IMG/'
         file_path = token[-1]
+        local_path = local_path+file_path
         img = cv2.imread(file_path)
         imgs.append(img)
     steering = float(row['steering'])
