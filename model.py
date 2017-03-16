@@ -40,7 +40,7 @@ print(len(x_train), 'number of training data features')
 print(len(y_train), 'number of labeled data')
 
 new_shape = (160,200,3)
-X_train= np.empty(shape=(X_train.shape[0],)+new_shape)
+X_train= np.empty(shape=(-1,66,200,3))
 #Model
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda,Dropout,Cropping2D, Reshape,Activation
