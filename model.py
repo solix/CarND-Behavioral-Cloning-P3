@@ -58,23 +58,23 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x:x/255.0 - 0.5,input_shape = (160,320,3)))
-    model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
-    model.add(Lambda(lambda x: tf.image.resize_images(x, (66, 200))))
-    print(model.output) #shape=(?, 66, 200, 3)
-    model.add(Convolution2D(3,5,5,activation='relu'))
-    model.add(MaxPooling2D())
-    model.add(Dropout(0.25))
-    print(model.output) #shape=(?, 31, 98, 3) wl=24 output = 31 x 98
-    model.add(Convolution2D(24, 5, 5, activation='relu'))
-    model.add(ZeroPadding2D((1,0)))
-    model.add(MaxPooling2D())
-    model.add(Dropout(0.25))
-    print(model.output)#shape=(?, 14, 47, 24) wl=36 output = 14 x 47
-    model.add(Convolution2D(36, 5, 5, activation='relu'))
-    model.add(ZeroPadding2D((0, 1)))
-    model.add(MaxPooling2D())
-    model.add(Dropout(0.25))
-    print(model.output)#shape=(?, 5, 22, 36)  output = 5x22
+    # model.add(Cropping2D(cropping=((70,25),(0,0))))  # also supports shape inference using `-1` as dimension
+    # model.add(Lambda(lambda x: tf.image.resize_images(x, (66, 200))))
+    # print(model.output) #shape=(?, 66, 200, 3)
+    # model.add(Convolution2D(3,5,5,activation='relu'))
+    # model.add(MaxPooling2D())
+    # model.add(Dropout(0.25))
+    # print(model.output) #shape=(?, 31, 98, 3) wl=24 output = 31 x 98
+    # model.add(Convolution2D(24, 5, 5, activation='relu'))
+    # model.add(ZeroPadding2D((1,0)))
+    # model.add(MaxPooling2D())
+    # model.add(Dropout(0.25))
+    # print(model.output)#shape=(?, 14, 47, 24) wl=36 output = 14 x 47
+    # model.add(Convolution2D(36, 5, 5, activation='relu'))
+    # model.add(ZeroPadding2D((0, 1)))
+    # model.add(MaxPooling2D())
+    # model.add(Dropout(0.25))
+    # print(model.output)#shape=(?, 5, 22, 36)  output = 5x22
     model.add(Convolution2D(48, 3, 3, activation='relu' ,border_mode='same'))
     model.add(ZeroPadding2D(((1, 9))))
     model.add(MaxPooling2D())
@@ -85,22 +85,22 @@ def main(_):
     print(model.output)
     model.add(Flatten())
     print(model.output)
-    model.add(Dense(1152))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(100))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(50))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(10))
-    model.add(Activation('relu'))
+    # model.add(Dense(1152))
+    # model.add(Activation('relu'))
+    # model.add(Dropout(0.5))
+    # model.add(Dense(100))
+    # model.add(Activation('relu'))
+    # model.add(Dropout(0.5))
+    # model.add(Dense(50))
+    # model.add(Activation('relu'))
+    # model.add(Dropout(0.5))
+    # model.add(Dense(10))
+    # model.add(Activation('relu'))
     model.add(Dense(1))
 
 
 
-    model.compile(loss = 'mse' , optimizer = Adam(lr=FLAGS.learning_rate) , metrics=['accuracy'])
+    model.compile(loss = 'mse' , optimizer = 'adam')
     print("Model summary:\n", model.summary())
 
 
