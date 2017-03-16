@@ -15,7 +15,10 @@ rows = ['center', 'left', 'right']
 for index, row in reader.iterrows():
     # print(row['center'], row['steering'])
     for i in range(3):
-        file_path = './data/' + row[i]
+        source =  row[i]
+        token = source.split('/')
+        local_path = './data/IMG/' + row[i]
+        file_path = token[-1]
         img = cv2.imread(file_path)
         imgs.append(img)
     steering = float(row['steering'])
