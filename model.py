@@ -7,11 +7,9 @@ from keras import backend as K
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
-type(reader)
 
 imgs = []
 labels = []
-rows = ['center', 'left', 'right']
 for index, row in reader.iterrows():
     # print(row['center'], row['steering'])
     for i in range(3):
@@ -26,16 +24,16 @@ for index, row in reader.iterrows():
     labels.append(steering)
     labels.append(steering * 0.1)
     labels.append(steering * -0.1)
-augmented_images, augmented_measurements = [], []
 
-for image, mesure in zip(imgs, labels):
-    augmented_images.append(image)
-    augmented_measurements.append(mesure)
-    augmented_images.append(cv2.flip(image, 1))
-    augmented_measurements.append(mesure * -1.0)
+#augmented_images, augmented_measurements = [], []
 
-X_train = np.array(augmented_images)
-y_train = np.array(augmented_measurements)
+#for image, mesure in zip(imgs, labels): augmented_images.append(image)
+ #   augmented_measurements.append(mesure)
+  #  augmented_images.append(cv2.flip(image, 1))
+   # augmented_measurements.append(mesure * -1.0)
+
+X_train = np.array(imgs)
+y_train = np.array(labels)
 
 print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of labeled data')
@@ -58,7 +56,7 @@ def main(_):
     # inspired from Nvidia
     print('Build model...')
     model = Sequential()
-    model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(66, 200, 3)))
+    model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
     model.add(Cropping2D(cropping=((50, 20), (0, 0))))  # also supports shape inference using `-1` as dimension
     print(model.output)  # shape=(?, 66, 200, 3)
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2), activation='relu'))
@@ -67,15 +65,12 @@ def main(_):
     model.add(Dropout(0.25))
     model.add(Convolution2D(36, 5, 5, subsample=(2, 2), activation='relu'))
     model.add(Dropout(0.25))
-    model.add(Convolution2D(48, 3, 3, activation='relu', border_mode='same'))
+    model.add(Convolution2D(48, 3, 3, activation='relu'))
     model.add(Dropout(0.25))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
     model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dropout(0.5))
     model.add(Dense(100))
-    model.add(Dropout(0.5))
-    model.add(Dense(50))
     model.add(Dropout(0.5))
     model.add(Dense(10))
     model.add(Dense(1))
