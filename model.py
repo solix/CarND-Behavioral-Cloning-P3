@@ -23,7 +23,7 @@ for index, row in reader.iterrows():
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.1)
-    labels.append(steering + -0.1)
+    labels.append(steering - 0.1)
 
 augmented_images, augmented_measurements = [], []
 
@@ -43,7 +43,7 @@ from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Dropout, Cropping2D, Reshape, Activation
 from keras.optimizers import Adam
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-
+from keras.layers.normalization import BatchNormalization
 # define flags for epoch and batchsize
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -60,18 +60,17 @@ def main(_):
     model.add(Cropping2D(cropping=((50, 20), (0, 0))))  # also supports shape inference using `-1` as dimension
     print(model.output)  # shape=(?, 66, 200, 3)
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2), activation='relu'))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.55))
     model.add(Convolution2D(24, 5, 5, subsample=(2, 2), activation='relu'))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.55))
     model.add(Convolution2D(36, 5, 5, subsample=(2, 2), activation='relu'))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.55))
     model.add(Convolution2D(48, 3, 3, activation='relu'))
-    model.add(Dropout(0.25))
+    model.add(Dropout(0.55))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(Dropout(0.25))
     model.add(Flatten())
     model.add(Dense(100))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.75))
     model.add(Dense(10))
     model.add(Dense(1))
 
