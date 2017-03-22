@@ -70,22 +70,16 @@ for index, row in my_reader_offroad_2.iterrows():
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
-.(ddimg)
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
-for image, measure in zip(imgs, labels):
-      augmented_images.append(image)
-      augmented_measurements.append(measure)
-      augmented_images.append(cv2.flip(image, 1))
-      augmented_measurements.append(measure*-1.0)
+
+X_train = np.array(imgs)
+y_train = np.array(labels)
   
-  X_train = np.array(imgs)
-  y_train = np.array(labels)
-  
-  print(len(X_train), 'number of training data features')
-  print(len(y_train), 'number of labeled data')
+print(len(X_train), 'number of training data features')
+print(len(y_train), 'number of labeled data')
   
   # Model
 from keras.models import Sequential
@@ -97,8 +91,8 @@ from keras.layers.noise import GaussianNoise
 # define flags for epoch and batchsize
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_integer('epochs', 10, "The number of epochs.")
-flags.DEFINE_integer('batch_size', 60, "The batch size.")
+flags.DEFINE_integer('epochs', 11, "The number of epochs.")
+flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
