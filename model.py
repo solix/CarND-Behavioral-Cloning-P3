@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 import pandas as pd
 import cv2
@@ -10,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+# reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -27,19 +25,19 @@ for  index, row in reader.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-for  index, row in reader2.iterrows():
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './my_data_2/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+# for  index, row in reader2.iterrows():
+#     for i in range(3):
+#         source =  row[i]
+#         token = source.split('/')
+#         local_path = './my_data_2/IMG/'
+#         file_path = token[-1]
+#         local_path = local_path+file_path
+#         img = cv2.imread(local_path)
+#         imgs.append(img)
+#     steering = float(row['steering'])
+#     labels.append(steering)
+#     labels.append(steering + 0.2)
+#     labels.append(steering - 0.2)
 
 X_train = np.array(imgs)
 y_train = np.array(labels)
@@ -54,12 +52,13 @@ for  img, msr in zip(imgs,labels):
     augmented_imgs.append(cv2.flip(img,1))
     augmented_steerings.append(msr*-1.0)
 
-X_train,X_valid,y_train,y_valid = train_test_split(augmented_imgs,augmented_steerings,test_size=0.20)
+X_train,X_valid,y_train,y_valid = train_test_split(augmented_imgs,augmented_steerings,test_size=0.33)
 
-print(len(augmented_imgs), 'number of training data features')
-print(len(augmented_steerings), 'number of training labeles')
+print(len(X_train), 'number of training data features')
+print(len(y_train), 'number of training labeles')
 
-
+datagen = ImageDataGenerator(
+    )
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
@@ -80,18 +79,6 @@ FLAGS = flags.FLAGS
 flags.DEFINE_integer('epochs', 11, "The number of epochs.")
 flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
-
-def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
- # Create empty arrays to contain batch of features and labels#
- batch_features = np.zeros((batch_size, 160, 320, 3))
- batch_labels = np.zeros((batch_size,1))
- while True:
-   for i in range(batch_size):
-     #choose random index in features
-     index= random.choice(len(features),1)
-     batch_features[i] = features[index]
-     batch_labels[i] = labels[index]
-   yield batch_features, batch_labels
 
 def plothistory (history_object):
 
@@ -129,9 +116,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    # model.fit(augmented_imgs, augmented_steerings, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    model.fit(augmented_imgs, augmented_steerings, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
-    model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    # history = model.fit_generator(datagen.flow(X_train,y_train,batch_size=FLAGS.batch_size),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
