@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -24,6 +25,19 @@ for  index, row in reader.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
+# for  index, row in reader2.iterrows():
+#     for i in range(3):
+#         source =  row[i]
+#         token = source.split('/')
+#         local_path = './my_data_2/IMG/'
+#         file_path = token[-1]
+#         local_path = local_path+file_path
+#         img = cv2.imread(local_path)
+#         imgs.append(img)
+#     steering = float(row['steering'])
+#     labels.append(steering)
+#     labels.append(steering + 0.2)
+#     labels.append(steering - 0.2)
 
 X_train = np.array(imgs)
 y_train = np.array(labels)
@@ -101,7 +115,7 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    model.fit(augmented_imgs, augmented_steerings, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
     # history = model.fit_generator(datagen.flow(X_train,y_train,batch_size=FLAGS.batch_size),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
