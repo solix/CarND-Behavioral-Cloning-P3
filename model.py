@@ -41,7 +41,7 @@ for index, row in recovery_reader.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-X_train = np.array(imgs).astype('float32')
+X_train = np.array(imgs)
 y_train = np.array(labels)
 
 X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
@@ -50,8 +50,6 @@ print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
 
 datagen = ImageDataGenerator(
-    featurewise_center=True,
-    featurewise_std_normalization=True,
     rotation_range=90,
     width_shift_range=0.2,
     height_shift_range=0.2,
