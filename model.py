@@ -66,10 +66,6 @@ print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
 
 datagen = ImageDataGenerator(
-    rotation_range=30,
-    shear_range=0.2,
-    vertical_flip=True,
-    samplewise_center=True,
     samplewise_std_normalization=True
 
     )
