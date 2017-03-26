@@ -8,7 +8,6 @@ from sklearn.model_selection import train_test_split
 
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-recovery_reader = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -20,22 +19,6 @@ for  index, row in reader.iterrows():
         local_path = local_path+file_path
         img = cv2.imread(local_path)
         img = cv2.cvtColor(img,cv2.COLOR_RGB2YUV)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
-
-
-for index, row in recovery_reader.iterrows():
-    # print(row['center'], row['steering'])
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './my_data/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
