@@ -33,7 +33,7 @@ augmented_imgs = []
 augmented_steerings= []
 
 for  img, msr in zip(imgs,labels):
-    augmented_imgs.append(cv2.img)
+    augmented_imgs.append(img)
     augmented_steerings.append(msr)
     augmented_imgs.append(cv2.flip(img,1))
     augmented_steerings.append(msr*-1.0)
