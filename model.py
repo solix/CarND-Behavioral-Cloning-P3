@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-# reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -51,8 +51,7 @@ for  img, msr in zip(imgs,labels):
     augmented_steerings.append(msr)
     augmented_imgs.append(cv2.flip(img,1))
     augmented_steerings.append(msr*-1.0)
-
-X_train,X_valid,y_train,y_valid = train_test_split(augmented_imgs,augmented_steerings,test_size=0.33)
+# X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
 
 print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
@@ -116,7 +115,7 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    model.fit(augmented_imgs, augmented_steerings, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
     # history = model.fit_generator(datagen.flow(X_train,y_train,batch_size=FLAGS.batch_size),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
