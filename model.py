@@ -47,7 +47,7 @@ for index, row in recovery_reader2.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './my_data_2/IMG/'
+        local_path = './my_data/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
