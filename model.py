@@ -18,7 +18,6 @@ for  index, row in reader.iterrows():
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
-        img = cv2.cvtColor(img,cv2.COLOR_RGB2YUV)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
@@ -29,6 +28,15 @@ for  index, row in reader.iterrows():
 X_train = np.array(imgs)
 y_train = np.array(labels)
 
+
+augmented_imgs = []
+augmented_steerings= []
+
+for  img, msr in zip(imgs,labels):
+    augmented_imgs.append(cv2.img)
+    augmented_steerings.append(msr)
+    augmented_imgs.append(cv2.flip(img,1))
+    augmented_steerings.append(msr*-1.0)
 # X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
 
 print(len(X_train), 'number of training data features')
@@ -74,7 +82,7 @@ def main(_):
     model = Sequential()
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(160, 320, 3)))
     model.add(Cropping2D(cropping=((90,20), (0, 0))))  # also supports shape inference using `-1` as dimension
-    model.add(GaussianNoise(sigma=0.2))
+    model.add(GaussianNoise(sigma=0.5))
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.001 )))
     model.add(ELU())
     model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.001)))
