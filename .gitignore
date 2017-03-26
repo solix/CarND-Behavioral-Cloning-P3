@@ -102,4 +102,9 @@ model.h5
 /my_data/
 /my_data_2/
 /my_data_3/
+/drive-data
+/track1
 
+IMG/
+drive-data-turns/
+driving_log.csv
