@@ -41,7 +41,7 @@ for index, row in recovery_reader.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-X_train = np.array(imgs)
+X_train = np.array(imgs).astype('float32')
 y_train = np.array(labels)
 
 X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
