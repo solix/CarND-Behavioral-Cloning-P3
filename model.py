@@ -11,7 +11,6 @@ recovery_reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['cen
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
-    print(row['center'], row['steering'])
     for i in range(3):
         source =  row[i]
         token = source.split('/')
