@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 
 reader = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 recovery_reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-recovery_reader2= pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+recovery_reader2= pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
