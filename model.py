@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 import pandas as pd
 import cv2
@@ -13,20 +11,21 @@ recovery_reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['cen
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
+    print(row['center'], row['steering'])
     for i in range(3):
-       source =  row[i]
-       token = source.split('/')
-       local_path = './data/IMG/'
-       file_path = token[-1]
-       local_path = local_path+file_path
-       img = cv2.imread(local_path)
-       imgs.append(img)
+        source =  row[i]
+        token = source.split('/')
+        local_path = './data/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-for index, row in drive_reader.iterrows():
+for index, row in reader.iterrows():
     # print(row['center'], row['steering'])
     for i in range(3):
         source =  row[i]
@@ -40,21 +39,21 @@ for index, row in drive_reader.iterrows():
     labels.append(steering)
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
-#
-# for index, row in recovery_reader.iterrows():
-#     # print(row['center'], row['steering'])
-#     for i in range(3):
-#         source =  row[i]
-#         token = source.split('/')
-#         local_path = './track1/recovery/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
+
+for index, row in recovery_reader.iterrows():
+    # print(row['center'], row['steering'])
+    for i in range(3):
+        source =  row[i]
+        token = source.split('/')
+        local_path = './track1/recovery/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        imgs.append(img)
+    steering = float(row['steering'])
+    labels.append(steering)
+    labels.append(steering + 0.2)
+    labels.append(steering - 0.2)
 
 X_train = np.array(imgs)
 y_train = np.array(labels)
@@ -80,17 +79,6 @@ flags.DEFINE_integer('epochs', 11, "The number of epochs.")
 flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
-def generator(features= X_train, labels = y_train, batch_size = FLAGS.batch_size):
- # Create empty arrays to contain batch of features and labels#
- batch_features = np.zeros((batch_size, 160, 320, 3))
- batch_labels = np.zeros((batch_size,1))
- while True:
-   for i in range(batch_size):
-     #choose random index in features
-     index= random.choice(len(features),1)
-     batch_features[i] = features[index]
-     batch_labels[i] = labels[index]
-   yield batch_features, batch_labels
 
 def main(_):
     # inspired from Nvidia
@@ -118,7 +106,6 @@ def main(_):
     print("Model summary:\n", model.summary())
 
     model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
-    # model.fit_generator(generator(),samples_per_epoch=FLAGS.batch_size,nb_epoch=FLAGS.epochs,nb_val_samples=)
     model.save('model.h5')
     print("Model is saves as model.h5")
 
