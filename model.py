@@ -52,8 +52,9 @@ print(len(y_train), 'number of training labeles')
 datagen = ImageDataGenerator(
     rotation_range=90,
     width_shift_range=0.2,
+    shear_range=0.3,
     height_shift_range=0.2,
-    vertical_flip=True)
+    )
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
