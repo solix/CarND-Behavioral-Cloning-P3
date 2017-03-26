@@ -7,18 +7,19 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 
-reader = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-recovery_reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+recovery_reader = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './track1/drive/IMG/'
+        local_path = './data/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
+        img = cv2.cvtColor(img,cv2.COLOR_RGB2YUV)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
@@ -31,7 +32,7 @@ for index, row in recovery_reader.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './track1/recovery/IMG/'
+        local_path = './my_data/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
@@ -45,14 +46,12 @@ for index, row in recovery_reader.iterrows():
 X_train = np.array(imgs)
 y_train = np.array(labels)
 
-X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
-  
+# X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.33)
+
 print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
 
 datagen = ImageDataGenerator(
-    samplewise_std_normalization=True
-
     )
 
 # Model is inspired by nvidia cnn model with a different tweaks
@@ -111,10 +110,10 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
-    datagen.fit(X_train)
-    history = model.fit_generator(datagen.flow(X_train,y_train,batch_size=FLAGS.batch_size),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
-    plothistory(history)
+    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    # datagen.fit(X_train)
+    # history = model.fit_generator(datagen.flow(X_train,y_train,batch_size=FLAGS.batch_size),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
 
