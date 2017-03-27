@@ -17,7 +17,7 @@ for  index, row in reader.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './data/IMG/'
+        local_path = './recovery/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
