@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 reader = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./my_data_2/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -25,19 +25,19 @@ for  index, row in reader.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-# for  index, row in reader2.iterrows():
-#     for i in range(3):
-#         source =  row[i]
-#         token = source.split('/')
-#         local_path = './my_data_2/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
+for  index, row in reader2.iterrows():
+    for i in range(3):
+        source =  row[i]
+        token = source.split('/')
+        local_path = './drive/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        imgs.append(img)
+    steering = float(row['steering'])
+    labels.append(steering)
+    labels.append(steering + 0.2)
+    labels.append(steering - 0.2)
 
 X_train = np.array(imgs)
 y_train = np.array(labels)
@@ -56,8 +56,6 @@ for  img, msr in zip(imgs,labels):
 print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
 
-datagen = ImageDataGenerator(
-    )
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
