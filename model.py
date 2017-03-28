@@ -9,52 +9,23 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 
-reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-# reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
-for  index, row in reader.iterrows():
+
+for  index, row in reader3.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './track1/recovery/IMG/'
+        local_path = './drive/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.25)
-    labels.append(steering - 0.25)
-
-for  index, row in reader2.iterrows():
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './track1/drive/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.25)
-    labels.append(steering - 0.25)
-
-# for  index, row in reader3.iterrows():
-#     for i in range(3):
-#         source =  row[i]
-#         token = source.split('/')
-#         local_path = './data/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
+    labels.append(steering + 0.2)
+    labels.append(steering - 0.2)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -67,8 +38,8 @@ for  img, msr in zip(imgs,labels):
     augmented_steerings.append(msr * -1.0)
 
 
-X_train = np.array(imgs)
-y_train = np.array(labels)
+X_train = np.array(augmented_imgs)
+y_train = np.array(augmented_steerings)
 
 
 # X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
