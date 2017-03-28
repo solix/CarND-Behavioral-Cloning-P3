@@ -43,11 +43,11 @@ for  index, row in reader2.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-for  index, row in reader2.iterrows():
+for  index, row in reader3.iterrows():
 
     source =  row['center']
     token = source.split('/')
-    local_path = './drive1/IMG/'
+    local_path = './recovery/IMG/'
     file_path = token[-1]
     local_path = local_path+file_path
     img = cv2.imread(local_path)
