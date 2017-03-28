@@ -1,13 +1,9 @@
 import random
 
+import cv2
 import numpy as np
 import pandas as pd
-import cv2
 import tensorflow as tf
-from keras.preprocessing.image import ImageDataGenerator
-from sklearn.utils import shuffle
-from sklearn.model_selection import train_test_split
-
 
 reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
@@ -25,8 +21,8 @@ for  index, row in reader.iterrows():
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+    labels.append(steering + 0.25)
+    labels.append(steering - 0.25)
 
 for  index, row in reader2.iterrows():
     for i in range(3):
@@ -39,8 +35,8 @@ for  index, row in reader2.iterrows():
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+    labels.append(steering + 0.25)
+    labels.append(steering - 0.25)
 
 for  index, row in reader.iterrows():
     for i in range(3):
@@ -53,8 +49,8 @@ for  index, row in reader.iterrows():
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+    labels.append(steering + 0.25)
+    labels.append(steering - 0.25)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -80,15 +76,13 @@ print(len(y_train), 'number of training labeles')
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Dropout, Cropping2D, Reshape, Activation
+from keras.layers import Flatten, Dense, Lambda, Cropping2D
 from keras.optimizers import Adam
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.layers.normalization import BatchNormalization
+from keras.layers.convolutional import Convolution2D
 from keras.layers.noise import GaussianNoise
 # define flags for epoch and batchsize
-from keras import backend as K
 from keras.layers.advanced_activations import ELU
-from keras.regularizers import l2, activity_l2
+from keras.regularizers import l2
 import matplotlib.pyplot as plt
 
 
@@ -128,22 +122,22 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((60,20), (0, 0))))  # also supports shape inference using `-1` as dimension
+    model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.5))
-    model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.001 )))
+    model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.02 )))
     model.add(ELU())
-    model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.001)))
+    model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.02)))
     model.add(ELU())
-    model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.001)))
+    model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.02)))
     model.add(ELU())
-    model.add(Convolution2D(64, 3, 3, W_regularizer=l2(.001)))
+    model.add(Convolution2D(64, 3, 3, W_regularizer=l2(.02)))
     model.add(ELU())
     model.add(Flatten())
-    model.add(Dense(100,W_regularizer=l2(.001)))
+    model.add(Dense(100,W_regularizer=l2(.02)))
     model.add(ELU())
-    model.add(Dense(10,W_regularizer=l2(.001)))
+    model.add(Dense(10,W_regularizer=l2(.02)))
     model.add(ELU())
-    model.add(Dense(1,W_regularizer=l2(.001)))
+    model.add(Dense(1,W_regularizer=l2(.02)))
 
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
