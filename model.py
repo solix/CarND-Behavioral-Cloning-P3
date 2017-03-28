@@ -25,22 +25,22 @@ for  index, row in reader.iterrows():
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+    labels.append(steering + 0.25)
+    labels.append(steering - 0.25)
 
-for  index, row in reader2.iterrows():
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './track1/drive/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+# for  index, row in reader2.iterrows():
+#     for i in range(3):
+#         source =  row[i]
+#         token = source.split('/')
+#         local_path = './track1/drive/IMG/'
+#         file_path = token[-1]
+#         local_path = local_path+file_path
+#         img = cv2.imread(local_path)
+#         imgs.append(img)
+#     steering = float(row['steering'])
+#     labels.append(steering)
+#     labels.append(steering + 0.2)
+#     labels.append(steering - 0.2)
 
 # for  index, row in reader3.iterrows():
 #     for i in range(3):
