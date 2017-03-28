@@ -71,7 +71,7 @@ X_train = np.array(augmented_imgs)
 y_train = np.array(augmented_steerings)
 
 
-X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
+# X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
 
 print(len(X_train), 'number of training data features')
 print(len(y_train), 'number of training labeles')
@@ -148,9 +148,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 2)
+    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 2)
     # datagen.fit(X_train)
-    model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
