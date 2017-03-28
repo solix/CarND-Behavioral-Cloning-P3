@@ -22,25 +22,27 @@ for  index, row in reader.iterrows():
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.25)
     labels.append(steering - 0.25)
 
-# for  index, row in reader2.iterrows():
-#     for i in range(3):
-#         source =  row[i]
-#         token = source.split('/')
-#         local_path = './track1/drive/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
+for  index, row in reader2.iterrows():
+    for i in range(3):
+        source =  row[i]
+        token = source.split('/')
+        local_path = './track1/drive/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        imgs.append(img)
+    steering = float(row['steering'])
+    labels.append(steering)
+    labels.append(steering + 0.2)
+    labels.append(steering - 0.2)
 
 # for  index, row in reader3.iterrows():
 #     for i in range(3):
@@ -62,7 +64,7 @@ augmented_steerings= []
 for  img, msr in zip(imgs,labels):
     augmented_imgs.append(img)
     augmented_steerings.append(msr)
-    flipped_image = cv2.flip(img,1)
+    flipped_image = np.fliplr(img)
     augmented_imgs.append(flipped_image)
     augmented_steerings.append(msr * -1.0)
 
@@ -130,20 +132,20 @@ def main(_):
     model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
     model.add(Cropping2D(cropping=((60,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.5))
-    model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.001 )))
+    model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
     model.add(ELU())
-    model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.001)))
+    model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.01)))
     model.add(ELU())
-    model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.001)))
+    model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Convolution2D(64, 3, 3, W_regularizer=l2(.001)))
+    model.add(Convolution2D(64, 3, 3, W_regularizer=l2(.01)))
     model.add(ELU())
     model.add(Flatten())
-    model.add(Dense(100,W_regularizer=l2(.001)))
+    model.add(Dense(100,W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Dense(10,W_regularizer=l2(.001)))
+    model.add(Dense(10,W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Dense(1,W_regularizer=l2(.001)))
+    model.add(Dense(1,W_regularizer=l2(.01)))
 
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
