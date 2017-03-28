@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 
 reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 for  index, row in reader.iterrows():
@@ -41,7 +42,19 @@ for  index, row in reader2.iterrows():
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
 
-
+for  index, row in reader.iterrows():
+    for i in range(3):
+        source =  row[i]
+        token = source.split('/')
+        local_path = './data/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        imgs.append(img)
+    steering = float(row['steering'])
+    labels.append(steering)
+    labels.append(steering + 0.2)
+    labels.append(steering - 0.2)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -54,8 +67,8 @@ for  img, msr in zip(imgs,labels):
     augmented_steerings.append(msr * -1.0)
 
 
-X_train = np.array(imgs)
-y_train = np.array(labels)
+X_train = np.array(augmented_imgs)
+y_train = np.array(augmented_steerings)
 
 
 # X_train,X_valid,y_train,y_valid = train_test_split(augmented_imgs,augmented_steerings,test_size=0.25)
@@ -86,18 +99,18 @@ flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
-# def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
-#  # Create empty arrays to contain batch of features and labels#
-#  batch_features = np.zeros((batch_size, X_train[0].shape, X_train[1].shape, X_train[3].shape))
-#  print("batch_feature shape is {}".format(batch_features.shape))
-#  batch_labels = np.zeros((batch_size,1))
-#  while True:
-#    for i in range(batch_size):
-#      #choose random index in features
-#      index= random.choice(len(features),1)
-#      batch_features[i] = features[index]
-#      batch_labels[i] = labels[index]
-#    yield batch_features, batch_labels
+def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
+ # Create empty arrays to contain batch of features and labels#
+ batch_features = np.zeros((batch_size, X_train[0].shape, X_train[1].shape, X_train[3].shape))
+ print("batch_feature shape is {}".format(batch_features.shape))
+ batch_labels = np.zeros((batch_size,1))
+ while True:
+   for i in range(batch_size):
+     #choose random index in features
+     index= random.choice(len(features),1)
+     batch_features[i] = features[index]
+     batch_labels[i] = labels[index]
+   yield batch_features, batch_labels
 
 def plothistory (history_object):
 
@@ -135,9 +148,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 2)
+    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 2)
     # datagen.fit(X_train)
-    # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
