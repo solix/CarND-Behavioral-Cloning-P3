@@ -63,8 +63,8 @@ for  img, msr in zip(imgs,labels):
     augmented_steerings.append(msr * -1.0)
 
 
-X_train = np.array(augmented_imgs)
-y_train = np.array(augmented_steerings)
+X_train = np.array(imgs)
+y_train = np.array(labels)
 
 
 # X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
