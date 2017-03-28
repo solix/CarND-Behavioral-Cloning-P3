@@ -14,18 +14,18 @@ imgs = []
 labels = []
 
 for  index, row in reader3.iterrows():
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './drive/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        imgs.append(img)
+
+    source =  row['center']
+    token = source.split('/')
+    local_path = './drive/IMG/'
+    file_path = token[-1]
+    local_path = local_path+file_path
+    img = cv2.imread(local_path)
+    imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+    # labels.append(steering + 0.2)
+    # labels.append(steering - 0.2)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -100,21 +100,21 @@ def main(_):
     model = Sequential()
     model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
     model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
-    model.add(GaussianNoise(sigma=0.2))
-    model.add(Convolution2D(3, 5, 5, subsample=(2, 2)))
+    model.add(GaussianNoise(sigma=0.01))
+    model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
     model.add(ELU())
-    model.add(Convolution2D(24, 5, 5, subsample=(2, 2)))
+    model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.01)))
     model.add(ELU())
-    model.add(Convolution2D(36, 5, 5, subsample=(2, 2)))
+    model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Convolution2D(64, 3, 3))
+    model.add(Convolution2D(64, 3, 3, W_regularizer=l2(.01)))
     model.add(ELU())
     model.add(Flatten())
-    model.add(Dense(100))
+    model.add(Dense(100,W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Dense(10))
+    model.add(Dense(10,W_regularizer=l2(.01)))
     model.add(ELU())
-    model.add(Dense(1))
+    model.add(Dense(1,W_regularizer=l2(.01)))
 
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
