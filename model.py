@@ -9,54 +9,60 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 
-reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-# reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+# reader = pd.read_csv('./track1/recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+# reader2 = pd.read_csv('./track1/drive/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
-for  index, row in reader.iterrows():
-    for i in range(3):
-        source =  row[i]
-        token = source.split('/')
-        local_path = './track1/recovery/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.25)
-    labels.append(steering - 0.25)
+# for  index, row in reader.iterrows():
+#     for i in range(3):
+#         source =  row[i]
+#         token = source.split('/')
+#         local_path = './track1/recovery/IMG/'
+#         file_path = token[-1]
+#         local_path = local_path+file_path
+#         img = cv2.imread(local_path)
+#         img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+#         random_bright = 0.8 + 0.4 * (2 * np.random.uniform() - 1.0)
+#         img[:, :, 2] = img[:, :, 2] * random_bright
+#         img = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
+#         imgs.append(img)
+#     steering = float(row['steering'])
+#     labels.append(steering)
+#     labels.append(steering + 0.25)
+#     labels.append(steering - 0.25)
 
-for  index, row in reader2.iterrows():
+# for  index, row in reader2.iterrows():
+#     for i in range(3):
+#         source =  row[i]
+#         token = source.split('/')
+#         local_path = './track1/drive/IMG/'
+#         file_path = token[-1]
+#         local_path = local_path+file_path
+#         img = cv2.imread(local_path)
+#         img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+#         random_bright = 0.8 + 0.4 * (2 * np.random.uniform() - 1.0)
+#         img[:, :, 2] = img[:, :, 2] * random_bright
+#         img = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
+#         imgs.append(img)
+#     steering = float(row['steering'])
+#     labels.append(steering)
+#     labels.append(steering + 0.25)
+#     labels.append(steering - 0.25)
+
+for  index, row in reader3.iterrows():
     for i in range(3):
         source =  row[i]
         token = source.split('/')
-        local_path = './track1/drive/IMG/'
+        local_path = './data/IMG/'
         file_path = token[-1]
         local_path = local_path+file_path
         img = cv2.imread(local_path)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
         imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.2)
     labels.append(steering - 0.2)
-
-# for  index, row in reader3.iterrows():
-#     for i in range(3):
-#         source =  row[i]
-#         token = source.split('/')
-#         local_path = './data/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -69,8 +75,8 @@ for  img, msr in zip(imgs,labels):
     augmented_steerings.append(msr * -1.0)
 
 
-X_train = np.array(imgs)
-y_train = np.array(labels)
+X_train = np.array(augmented_imgs)
+y_train = np.array(augmented_steerings)
 
 
 # X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
@@ -130,8 +136,8 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((60,20), (0, 0))))  # also supports shape inference using `-1` as dimension
-    model.add(GaussianNoise(sigma=0.5))
+    model.add(Cropping2D(cropping=((100,20), (0, 0))))  # also supports shape inference using `-1` as dimension
+    model.add(GaussianNoise(sigma=0.01))
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
     model.add(ELU())
     model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.01)))
