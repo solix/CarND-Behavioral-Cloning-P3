@@ -132,7 +132,7 @@ def main(_):
     model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.01))
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
-    model.add(ELU)
+    model.add(ELU())
     model.add(Convolution2D(24, 5, 5, subsample=(2, 2), W_regularizer= l2(.01)))
     model.add(ELU())
     model.add(Convolution2D(36, 5, 5, subsample=(2, 2),W_regularizer=l2(.01)))
