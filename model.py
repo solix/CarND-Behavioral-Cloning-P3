@@ -101,7 +101,7 @@ flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
  # Create empty arrays to contain batch of features and labels#
- batch_features = np.zeros((batch_size, X_train[0].shape, X_train[1].shape, X_train[3].shape))
+ batch_features = np.zeros((batch_size,160,320,3))
  print("batch_feature shape is {}".format(batch_features.shape))
  batch_labels = np.zeros((batch_size,1))
  while True:
