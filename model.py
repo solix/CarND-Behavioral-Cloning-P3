@@ -9,27 +9,27 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 
-reader1 = pd.read_csv('./my_recovery_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+# reader1 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
-def loadUdacityData():
-    #loading data given by udacity teacher
-    for  index, row in reader1.iterrows():
-        for i in range(3):
-            source =  row['center']
-            token = source.split('/')
-            local_path = './first/IMG/'
-            file_path = token[-1]
-            local_path = local_path+file_path
-            img = cv2.imread(local_path)
-            imgs.append(img)
-        steering = float(row['steering'])
-        labels.append(steering)
-        labels.append(steering + 0.2)
-        labels.append(steering - 0.2)
-
+# def loadUdacityData(reader):
+#     #loading data given by udacity teacher
+#     for  index, row in reader1.iterrows():
+#         for i in range(3):
+#             source =  row['center']
+#             token = source.split('/')
+#             local_path = './data/IMG/'
+#             file_path = token[-1]
+#             local_path = local_path+file_path
+#             img = cv2.imread(local_path)
+#             imgs.append(img)
+#         steering = float(row['steering'])
+#         labels.append(steering)
+#         labels.append(steering + 0.2)
+#         labels.append(steering - 0.2)
+#
 
 def loadCustomData():
     #3lapse of data
@@ -39,7 +39,7 @@ def loadCustomData():
 
             source =  row['center']
             token = source.split('/')
-            local_path = './data/IMG/'
+            local_path = './my_data/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -68,7 +68,7 @@ def augmentAllWithFlippedImages():
 
 
 
-loadUdacityData()
+# loadUdacityData(reader1)
 loadCustomData()
 X_train,y_train = augmentAllWithFlippedImages()
 
@@ -130,7 +130,7 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((100,20), (0, 0))))  # also supports shape inference using `-1` as dimension
+    model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.01))
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
     model.add(ELU())
