@@ -60,10 +60,11 @@ def augmentAllWithFlippedImages():
         flipped_image = np.fliplr(img)
         augmented_imgs.append(flipped_image)
         augmented_steerings.append(msr * -1.0)
-        X_train = np.array(augmented_imgs)
-        y_train = np.array(augmented_steerings)
-        print(len(X_train), 'number of training data features')
-        print(len(y_train), 'number of training labeles')
+    X_train = np.array(augmented_imgs)
+    y_train = np.array(augmented_steerings)
+    print(len(X_train), 'number of training data features')
+    print(len(y_train), 'number of training labeles')
+
     return X_train,y_train
 
 
