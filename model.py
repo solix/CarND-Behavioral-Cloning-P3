@@ -64,9 +64,13 @@ def augmentAllWithFlippedImages():
     y_train = np.array(augmented_steerings)
     print(len(X_train), 'number of training data features')
     print(len(y_train), 'number of training labeles')
+    return X_train,y_train
 
-    yield X_train,y_train
 
+
+# loadUdacityData(reader1)
+loadCustomData(reader2)
+X_train,y_train = augmentAllWithFlippedImages()
 
 
 
@@ -96,9 +100,9 @@ flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
-
 def generator(features, labels, batch_size=FLAGS.batch_size):
  # Create empty arrays to contain batch of features and labels#
+ data = augmentAllWithFlippedImages()
  batch_features = np.zeros((batch_size,160,320,3))
  print("batch_feature shape is {}".format(batch_features.shape))
  batch_labels = np.zeros((batch_size))
@@ -108,7 +112,7 @@ def generator(features, labels, batch_size=FLAGS.batch_size):
      index= random.choice(len(features),1)
      batch_features[i] = features[index]
      batch_labels[i] = labels[index]
-   yield batch_features, batch_labels
+   yield batch_features.astype(np.float32), batch_labels
 
 def plothistory (history_object):
 
@@ -121,13 +125,7 @@ def plothistory (history_object):
     plt.legend(['training set', 'validation set'], loc='upper right')
     plt.show()
 
-
-loadUdacityData(reader1)
-loadCustomData(reader2)
-X_data, y_data = augmentAllWithFlippedImages()
 def main(_):
-
-    X_train ,X_valid, y_train , y_valid = train_test_split(X_data,y_data,test_size=0.25)
     # inspired from Nvidia
     print('Build model...')
     model = Sequential()
@@ -152,9 +150,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
-    model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
