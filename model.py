@@ -9,27 +9,27 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 
-reader1 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+# reader1 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
-def loadUdacityData(reader):
-    #loading data given by udacity teacher
-    for  index, row in reader1.iterrows():
-        for i in range(3):
-            source =  row['center']
-            token = source.split('/')
-            local_path = './data/IMG/'
-            file_path = token[-1]
-            local_path = local_path+file_path
-            img = cv2.imread(local_path)
-            imgs.append(img)
-        steering = float(row['steering'])
-        labels.append(steering)
-        labels.append(steering + 0.2)
-        labels.append(steering - 0.2)
-
+# def loadUdacityData(reader):
+#     #loading data given by udacity teacher
+#     for  index, row in reader1.iterrows():
+#         for i in range(3):
+#             source =  row['center']
+#             token = source.split('/')
+#             local_path = './data/IMG/'
+#             file_path = token[-1]
+#             local_path = local_path+file_path
+#             img = cv2.imread(local_path)
+#             imgs.append(img)
+#         steering = float(row['steering'])
+#         labels.append(steering)
+#         labels.append(steering + 0.2)
+#         labels.append(steering - 0.2)
+#
 
 def loadCustomData(reader):
     #3lapse of data
