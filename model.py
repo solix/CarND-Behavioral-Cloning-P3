@@ -130,7 +130,7 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((100,20), (0, 0))))  # also supports shape inference using `-1` as dimension
+    model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.01))
     model.add(Convolution2D(3, 5, 5, subsample=(2, 2),W_regularizer=l2(.01 )))
     model.add(ELU())
