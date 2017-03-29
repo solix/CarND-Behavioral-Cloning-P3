@@ -68,8 +68,8 @@ def augmentAllWithFlippedImages():
 
 
 
-loadUdacityData(reader1)
-loadCustomData(reader2)
+loadUdacityData()
+loadCustomData()
 X_train,y_train = augmentAllWithFlippedImages()
 
 
