@@ -46,16 +46,16 @@ for  index, row in reader2.iterrows():
 augmented_imgs = []
 augmented_steerings= []
 
-for  img, msr in zip(imgs,labels):
-    augmented_imgs.append(img)
-    augmented_steerings.append(msr)
-    flipped_image = np.fliplr(img)
-    augmented_imgs.append(flipped_image)
-    augmented_steerings.append(msr * -1.0)
+# for  img, msr in zip(imgs,labels):
+#     augmented_imgs.append(img)
+#     augmented_steerings.append(msr)
+#     flipped_image = np.fliplr(img)
+#     augmented_imgs.append(flipped_image)
+#     augmented_steerings.append(msr * -1.0)
 
 
-data = np.array(augmented_imgs)
-labels = np.array(augmented_steerings)
+data = np.array(imgs)
+labels = np.array(labels)
 
 X_train,X_valid,y_train,y_valid = train_test_split(data,labels,test_size=0.2)
 
