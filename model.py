@@ -30,13 +30,15 @@ for  index, row in reader1.iterrows():
 
 for  index, row in reader2.iterrows():
 
-    source =  row['center']
-    token = source.split('/')
-    local_path = './my_data/IMG/'
-    file_path = token[-1]
-    local_path = local_path+file_path
-    img = cv2.imread(local_path)
-    imgs.append(img)
+    for i in range(3):
+
+        source =  row['center']
+        token = source.split('/')
+        local_path = './my_data/IMG/'
+        file_path = token[-1]
+        local_path = local_path+file_path
+        img = cv2.imread(local_path)
+        imgs.append(img)
     steering = float(row['steering'])
     labels.append(steering)
     labels.append(steering + 0.2)
@@ -46,18 +48,17 @@ for  index, row in reader2.iterrows():
 augmented_imgs = []
 augmented_steerings= []
 
-# for  img, msr in zip(imgs,labels):
-#     augmented_imgs.append(img)
-#     augmented_steerings.append(msr)
-#     flipped_image = np.fliplr(img)
-#     augmented_imgs.append(flipped_image)
-#     augmented_steerings.append(msr * -1.0)
+for  img, msr in zip(imgs,labels):
+    augmented_imgs.append(img)
+    augmented_steerings.append(msr)
+    flipped_image = np.fliplr(img)
+    augmented_imgs.append(flipped_image)
+    augmented_steerings.append(msr * -1.0)
 
 
-X_train = np.array(imgs)
-y_train = np.array(labels)
+X_train = np.array(augmented_imgs)
+y_train = np.array(augmented_steerings)
 
-# X_train,X_valid,y_train,y_valid = train_test_split(data,labels,test_size=0.2)
 
 # X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
 
@@ -87,18 +88,18 @@ flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
-def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
- # Create empty arrays to contain batch of features and labels#
- batch_features = np.zeros((batch_size,160,320,3))
- print("batch_feature shape is {}".format(batch_features.shape))
- batch_labels = np.zeros((batch_size,1))
- while True:
-   for i in range(batch_size):
-     #choose random index in features
-     index= random.choice(len(features),1)
-     batch_features[i] = features[index]
-     batch_labels[i] = labels[index]
-   yield batch_features, batch_labels
+# def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
+#  # Create empty arrays to contain batch of features and labels#
+#  batch_features = np.zeros((batch_size,160,320,3))
+#  print("batch_feature shape is {}".format(batch_features.shape))
+#  batch_labels = np.zeros((batch_size,1))
+#  while True:
+#    for i in range(batch_size):
+#      #choose random index in features
+#      index= random.choice(len(features),1)
+#      batch_features[i] = features[index]
+#      batch_labels[i] = labels[index]
+#    yield batch_features, batch_labels
 
 def plothistory (history_object):
 
