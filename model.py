@@ -14,56 +14,63 @@ reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'r
 imgs = []
 labels = []
 
-# for  index, row in reader1.iterrows():
-#     for i in range(3):
-#         source =  row['center']
-#         token = source.split('/')
-#         local_path = './data/IMG/'
-#         file_path = token[-1]
-#         local_path = local_path+file_path
-#         img = cv2.imread(local_path)
-#         imgs.append(img)
-#     steering = float(row['steering'])
-#     labels.append(steering)
-#     labels.append(steering + 0.2)
-#     labels.append(steering - 0.2)
+def loadUdacityData(reader):
+    #loading data given by udacity teacher
+    for  index, row in reader1.iterrows():
+        for i in range(3):
+            source =  row['center']
+            token = source.split('/')
+            local_path = './data/IMG/'
+            file_path = token[-1]
+            local_path = local_path+file_path
+            img = cv2.imread(local_path)
+            imgs.append(img)
+        steering = float(row['steering'])
+        labels.append(steering)
+        labels.append(steering + 0.2)
+        labels.append(steering - 0.2)
 
-for  index, row in reader2.iterrows():
 
-    for i in range(3):
+def loadCustomData(reader):
+    #3lapse of data
+    for  index, row in reader2.iterrows():
 
-        source =  row['center']
-        token = source.split('/')
-        local_path = './my_data/IMG/'
-        file_path = token[-1]
-        local_path = local_path+file_path
-        img = cv2.imread(local_path)
-        imgs.append(img)
-    steering = float(row['steering'])
-    labels.append(steering)
-    labels.append(steering + 0.2)
-    labels.append(steering - 0.2)
+        for i in range(3):
+
+            source =  row['center']
+            token = source.split('/')
+            local_path = './my_data/IMG/'
+            file_path = token[-1]
+            local_path = local_path+file_path
+            img = cv2.imread(local_path)
+            imgs.append(img)
+        steering = float(row['steering'])
+        labels.append(steering)
+        labels.append(steering + 0.2)
+        labels.append(steering - 0.2)
 
 
 augmented_imgs = []
 augmented_steerings= []
 
-for  img, msr in zip(imgs,labels):
-    augmented_imgs.append(img)
-    augmented_steerings.append(msr)
-    flipped_image = np.fliplr(img)
-    augmented_imgs.append(flipped_image)
-    augmented_steerings.append(msr * -1.0)
+def augmentAllWithFlippedImages():
+    for  img, msr in zip(imgs,labels):
+        augmented_imgs.append(img)
+        augmented_steerings.append(msr)
+        flipped_image = np.fliplr(img)
+        augmented_imgs.append(flipped_image)
+        augmented_steerings.append(msr * -1.0)
+        X_train = np.array(augmented_imgs)
+        y_train = np.array(augmented_steerings)
+        print(len(X_train), 'number of training data features')
+        print(len(y_train), 'number of training labeles')
+    return X_train,y_train
 
 
-X_train = np.array(augmented_imgs)
-y_train = np.array(augmented_steerings)
 
 
-# X_train,X_valid,y_train,y_valid = train_test_split(X_train,y_train,test_size=0.25)
 
-print(len(X_train), 'number of training data features')
-print(len(y_train), 'number of training labeles')
+
 
 
 
@@ -88,18 +95,19 @@ flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
-# def generator(features=X_train, labels=y_train, batch_size=FLAGS.batch_size):
-#  # Create empty arrays to contain batch of features and labels#
-#  batch_features = np.zeros((batch_size,160,320,3))
-#  print("batch_feature shape is {}".format(batch_features.shape))
-#  batch_labels = np.zeros((batch_size,1))
-#  while True:
-#    for i in range(batch_size):
-#      #choose random index in features
-#      index= random.choice(len(features),1)
-#      batch_features[i] = features[index]
-#      batch_labels[i] = labels[index]
-#    yield batch_features, batch_labels
+
+def generator(features, labels, batch_size=FLAGS.batch_size):
+ # Create empty arrays to contain batch of features and labels#
+ batch_features = np.zeros((batch_size,160,320,3))
+ print("batch_feature shape is {}".format(batch_features.shape))
+ batch_labels = np.zeros((batch_size))
+ while True:
+   for i in range(batch_size):
+     #choose random index in features
+     index= random.choice(len(features),1)
+     batch_features[i] = features[index]
+     batch_labels[i] = labels[index]
+   yield batch_features, batch_labels
 
 def plothistory (history_object):
 
@@ -113,6 +121,10 @@ def plothistory (history_object):
     plt.show()
 
 def main(_):
+    loadUdacityData(reader1)
+    loadCustomData(reader2)
+    X_data, y_data = augmentAllWithFlippedImages()
+    X_train ,X_valid, y_train , y_valid = train_test_split(X_data,y_data,test_size=0.25)
     # inspired from Nvidia
     print('Build model...')
     model = Sequential()
@@ -137,9 +149,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
-    # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
+    model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     model.save('model.h5')
     print("Model is saves as model.h5")
