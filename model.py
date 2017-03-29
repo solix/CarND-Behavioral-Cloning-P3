@@ -24,7 +24,6 @@ def loadUdacityData():
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
-            img = cv2.cvtColor(img,cv2.COLOR_RGB2YUV)
             imgs.append(img)
         steering = float(row['steering'])
         labels.append(steering)
@@ -44,7 +43,6 @@ def loadCustomData():
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
-            img = cv2.cvtColor(img,cv2.COLOR_RGB2YUV)
             imgs.append(img)
         steering = float(row['steering'])
         labels.append(steering)
