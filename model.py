@@ -65,7 +65,7 @@ def augmentAllWithFlippedImages():
     print(len(X_train), 'number of training data features')
     print(len(y_train), 'number of training labeles')
 
-    return X_train,y_train
+    yield X_train,y_train
 
 
 
