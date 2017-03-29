@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 
 
 reader1 = pd.read_csv('./my_recovery_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
@@ -39,7 +39,7 @@ def loadCustomData():
 
             source =  row['center']
             token = source.split('/')
-            local_path = './my_data/IMG/'
+            local_path = './data/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
