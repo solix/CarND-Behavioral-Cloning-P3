@@ -121,10 +121,12 @@ def plothistory (history_object):
     plt.legend(['training set', 'validation set'], loc='upper right')
     plt.show()
 
+
+loadUdacityData(reader1)
+loadCustomData(reader2)
+X_data, y_data = augmentAllWithFlippedImages()
 def main(_):
-    loadUdacityData(reader1)
-    loadCustomData(reader2)
-    X_data, y_data = augmentAllWithFlippedImages()
+
     X_train ,X_valid, y_train , y_valid = train_test_split(X_data,y_data,test_size=0.25)
     # inspired from Nvidia
     print('Build model...')
