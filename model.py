@@ -8,7 +8,6 @@ from keras.preprocessing.image import ImageDataGenerator
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
-
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 # reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 # reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
@@ -52,6 +51,7 @@ labels = []
 
 
 
+
 def loadRecoveryData():
     #loading data given by udacity teacher
     for  index, row in reader1.iterrows():
@@ -67,6 +67,7 @@ def loadRecoveryData():
         labels.append(steering)
         labels.append(steering + 0.25)
         labels.append(steering - 0.25)
+
 
 
 augmented_imgs = []
@@ -90,6 +91,7 @@ def augmentAllWithFlippedImages():
 # loadUdacityData()
 loadRecoveryData()
 # loadCustomData()
+
 X_train,y_train = augmentAllWithFlippedImages()
 
 
