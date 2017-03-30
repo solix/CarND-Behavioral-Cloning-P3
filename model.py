@@ -9,7 +9,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./recovery_driving/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./reverselaps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 imgs = []
 labels = []
@@ -20,7 +20,7 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './recovery_driving/IMG/'
+            local_path = './reverselaps/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -166,7 +166,7 @@ def main(_):
     # fits the model on batches with real-time data augmentation:
     # model.fit_generator(datagen.flow(X_train, y_train, batch_size=FLAGS.batch_size),
     #                     steps_per_epoch=len(X_train), epochs=FLAGS.epochs)
-    model_no = 'model_XYZ.h5'
+    model_no = 'model_reverse.h5'
     model.save(model_no)
     print("Model is saves as {}".format(model_no))
 
