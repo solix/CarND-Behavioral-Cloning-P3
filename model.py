@@ -9,14 +9,13 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-# reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader3 = pd.read_csv('./bridge-data-better/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader4 = pd.read_csv('./after-bridge-data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
-def loadUdacityData():
-    #loading data given by udacity teacher
+def loadAfterBridgeData():
+    #loading data given
     for  index, row in reader4.iterrows():
         for i in range(3):
             source =  row['center']
@@ -32,29 +31,12 @@ def loadUdacityData():
         labels.append(steering - 0.2)
 
 
-# def loadCustomData():
-#     #3lapse of data
-#     for  index, row in reader2.iterrows():
-#
-#         for i in range(3):
-#
-#             source =  row['center']
-#             token = source.split('/')
-#             local_path = './my_data/IMG/'
-#             file_path = token[-1]
-#             local_path = local_path+file_path
-#             img = cv2.imread(local_path)
-#             imgs.append(img)
-#         steering = float(row['steering'])
-#         labels.append(steering)
-#         labels.append(steering + 0.2)
-#         labels.append(steering - 0.2)
 
 
 
 
-def loadRecoveryData():
-    #loading data given by udacity teacher
+def loadfivelapsData():
+    #loading data given
     for  index, row in reader1.iterrows():
         for i in range(3):
             source =  row['center']
@@ -66,8 +48,24 @@ def loadRecoveryData():
             imgs.append(img)
         steering = float(row['steering'])
         labels.append(steering)
-        labels.append(steering + 0.25)
-        labels.append(steering - 0.25)
+        labels.append(steering + 0.2)
+        labels.append(steering - 0.2)
+def  loadBridgeData():
+    #loading data given
+    for  index, row in reader1.iterrows():
+        for i in range(3):
+            source =  row['center']
+            token = source.split('/')
+            local_path = './bridge-data-better/IMG/'
+            file_path = token[-1]
+            local_path = local_path+file_path
+            img = cv2.imread(local_path)
+            imgs.append(img)
+        steering = float(row['steering'])
+        labels.append(steering)
+        labels.append(steering + 0.2)
+        labels.append(steering - 0.2)
+
 
 
 
@@ -89,8 +87,9 @@ def augmentAllWithFlippedImages():
 
 
 
-loadUdacityData()
-loadRecoveryData()
+loadfivelapsData()
+loadBridgeData()
+loadAfterBridgeData()
 # loadCustomData()
 
 X_train,y_train = augmentAllWithFlippedImages()
@@ -191,7 +190,7 @@ def main(_):
     # datagen.fit(X_train)
     # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
-    model_no = 'model_b.h5'
+    model_no = 'model_X1.h5'
     model.save(model_no)
     print("Model is saves as {}".format(model_no))
 
