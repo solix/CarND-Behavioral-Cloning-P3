@@ -73,10 +73,7 @@ def augmentAllWithFlippedImages():
 
 
 
-loadfivelapsData()
-loadRecoveryData()
 
-X_train,y_train = augmentAllWithFlippedImages()
 
 
 
@@ -132,6 +129,9 @@ def plothistory (history_object):
     plt.show()
 
 def main(_):
+    loadfivelapsData()
+    loadRecoveryData()
+    X_train, y_train = augmentAllWithFlippedImages()
     # inspired from Nvidia
     print('Build model...')
     model = Sequential()
