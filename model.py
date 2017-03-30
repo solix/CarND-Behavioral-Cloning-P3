@@ -10,25 +10,25 @@ from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-# reader3 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./bridge-data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
-# def loadUdacityData():
-#     #loading data given by udacity teacher
-#     for  index, row in reader1.iterrows():
-#         for i in range(3):
-#             source =  row['center']
-#             token = source.split('/')
-#             local_path = './cor_data/IMG/'
-#             file_path = token[-1]
-#             local_path = local_path+file_path
-#             img = cv2.imread(local_path)
-#             imgs.append(img)
-#         steering = float(row['steering'])
-#         labels.append(steering)
-#         labels.append(steering + 0.2)
-#         labels.append(steering - 0.2)
+def loadUdacityData():
+    #loading data given by udacity teacher
+    for  index, row in reader3.iterrows():
+        for i in range(3):
+            source =  row['center']
+            token = source.split('/')
+            local_path = './bridge-data/IMG/'
+            file_path = token[-1]
+            local_path = local_path+file_path
+            img = cv2.imread(local_path)
+            imgs.append(img)
+        steering = float(row['steering'])
+        labels.append(steering)
+        labels.append(steering + 0.2)
+        labels.append(steering - 0.2)
 
 
 def loadCustomData():
