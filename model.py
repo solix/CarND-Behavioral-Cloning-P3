@@ -174,6 +174,18 @@ def main(_):
     # datagen.fit(X_train)
     # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
+    # compute quantities required for featurewise normalization
+    # (std, mean, and principal components if ZCA whitening is applied)
+    datagen = ImageDataGenerator(
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        )
+    datagen.fit(X_train)
+
+    # fits the model on batches with real-time data augmentation:
+    model.fit_generator(datagen.flow(X_train, y_train, batch_size=FLAGS.batch_size),
+                        steps_per_epoch=len(X_train), epochs=FLAGS.epochs)
     model_no = 'model_X3.h5'
     model.save(model_no)
     print("Model is saves as {}".format(model_no))
