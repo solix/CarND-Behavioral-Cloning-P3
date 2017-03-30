@@ -182,8 +182,9 @@ def main(_):
     # datagen.fit(X_train)
     # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
-    model.save('model.h5')
-    print("Model is saves as model.h5")
+    model_no = 'model_1.h5'
+    model.save(model_no)
+    print("Model is saves as {}".format(model_no))
 
 
 if __name__ == '__main__':
