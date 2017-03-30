@@ -30,11 +30,6 @@ def loadRecoveryData():
         labels.append(steering + 0.2)
         labels.append(steering - 0.2)
 
-
-
-
-
-
 def loadfivelapsData():
     #loading data given
     for  index, row in reader1.iterrows():
@@ -51,10 +46,6 @@ def loadfivelapsData():
         labels.append(steering + 0.2)
         labels.append(steering - 0.2)
 
-
-
-
-
 augmented_imgs = []
 augmented_steerings= []
 
@@ -70,17 +61,6 @@ def augmentAllWithFlippedImages():
     print(len(X_train), 'number of training data features')
     print(len(y_train), 'number of training labeles')
     return X_train,y_train
-
-
-
-
-
-
-
-
-
-
-
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
@@ -158,11 +138,11 @@ def main(_):
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100, W_regularizer=l2(.01)))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10,W_regularizer=l2(.01)))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(1,W_regularizer=l2(.01)))
@@ -170,21 +150,21 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    # model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
+    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
     # datagen.fit(X_train)
     # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
     # compute quantities required for featurewise normalization
     # (std, mean, and principal components if ZCA whitening is applied)
-    datagen = ImageDataGenerator(
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        )
-    datagen.fit(X_train)
+    # datagen = ImageDataGenerator(
+    #     rotation_range=20,
+    #     width_shift_range=0.2,
+    #     height_shift_range=0.2,
+    #     )
+    # datagen.fit(X_train)
 
     # fits the model on batches with real-time data augmentation:
-    model.fit_generator(datagen.flow(X_train, y_train, batch_size=FLAGS.batch_size),
+    # model.fit_generator(datagen.flow(X_train, y_train, batch_size=FLAGS.batch_size),
                         steps_per_epoch=len(X_train), epochs=FLAGS.epochs)
     model_no = 'model_XY.h5'
     model.save(model_no)
