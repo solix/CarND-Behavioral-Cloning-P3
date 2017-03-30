@@ -52,7 +52,7 @@ def loadfivelapsData():
         labels.append(steering - 0.2)
 def  loadBridgeData():
     #loading data given
-    for  index, row in reader1.iterrows():
+    for  index, row in reader3.iterrows():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
