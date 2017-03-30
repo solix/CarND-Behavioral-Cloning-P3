@@ -11,16 +11,17 @@ from sklearn.model_selection import train_test_split
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./my_data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader3 = pd.read_csv('./bridge-data-better/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader4 = pd.read_csv('./after-bridge-data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 imgs = []
 labels = []
 
 def loadUdacityData():
     #loading data given by udacity teacher
-    for  index, row in reader3.iterrows():
+    for  index, row in reader4.iterrows():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './bridge-data-better/IMG/'
+            local_path = './after-bridge-data/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -88,7 +89,7 @@ def augmentAllWithFlippedImages():
 
 
 
-# loadUdacityData()
+loadUdacityData()
 loadRecoveryData()
 loadCustomData()
 
@@ -182,7 +183,7 @@ def main(_):
     # datagen.fit(X_train)
     # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
     # plothistory(history)
-    model_no = 'model_1.h5'
+    model_no = 'model_2.h5'
     model.save(model_no)
     print("Model is saves as {}".format(model_no))
 
