@@ -60,7 +60,7 @@ def augmentAllWithFlippedImages():
     y_train = np.array(augmented_steerings)
     print(len(X_train), 'number of training data features')
     print(len(y_train), 'number of training labeles')
-    return X_train,y_train
+    yield X_train,y_train
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
