@@ -9,7 +9,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./orig/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 imgs = []
 labels = []
@@ -20,7 +20,7 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './orig/IMG/'
+            local_path = './recovery/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
