@@ -9,7 +9,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./counter/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 imgs = []
 labels = []
@@ -20,15 +20,15 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './recovery/IMG/'
+            local_path = './counter/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
             imgs.append(img)
         steering = float(row['steering'])
         labels.append(steering)
-        labels.append(steering + 0.2)
-        labels.append(steering - 0.2)
+        labels.append(steering + 0.25)
+        labels.append(steering - 0.25)
 
 def loadfivelapsData():
     #loading data given
@@ -43,8 +43,8 @@ def loadfivelapsData():
             imgs.append(img)
         steering = float(row['steering'])
         labels.append(steering)
-        labels.append(steering + 0.2)
-        labels.append(steering - 0.2)
+        labels.append(steering + 0.25)
+        labels.append(steering - 0.25)
 
 augmented_imgs = []
 augmented_steerings= []
@@ -125,12 +125,15 @@ def main(_):
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(36, 5, 5, border_mode='valid',subsample=(2, 2)))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(64, 3, 3,border_mode='valid'))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(64, 3, 3,border_mode='valid', ))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Flatten())
@@ -138,7 +141,6 @@ def main(_):
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100))
-    # model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10))
