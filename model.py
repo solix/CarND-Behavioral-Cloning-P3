@@ -9,7 +9,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./recovery/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./recovery_driving/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 imgs = []
 labels = []
@@ -20,7 +20,7 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './recovery/IMG/'
+            local_path = './recovery_driving/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -150,9 +150,9 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    for i in range(FLAGS.epochs):
+    for i in range(1,FLAGS.epochs):
         model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model_no = 'model_I'+str(i)+'.h5'
+        model_no = 'model_R'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
 
