@@ -116,7 +116,7 @@ def main(_):
     print('Build model...')
     model = Sequential()
     model.add(Lambda(lambda x: x / 127.5 - 1.0, input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
+    model.add(Cropping2D(cropping=((85,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.5))
     model.add(Convolution2D(3, 5, 5,border_mode='valid', subsample=(2, 2)))
     model.add(BatchNormalization())
@@ -138,11 +138,11 @@ def main(_):
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(1))
