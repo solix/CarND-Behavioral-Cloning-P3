@@ -150,8 +150,8 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    for i in range(FLAGS.epochs):
-        model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=5, batch_size=FLAGS.batch_size,verbose = 1)
+    for i in range(5,FLAGS.epochs):
+        model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
         model_no = 'model_I'+i+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
