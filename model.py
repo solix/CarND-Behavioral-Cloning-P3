@@ -150,25 +150,11 @@ def main(_):
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
 
-    model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=FLAGS.epochs, batch_size=FLAGS.batch_size,verbose = 1)
-    # datagen.fit(X_train)
-    # model.fit_generator(generator(),samples_per_epoch=len(X_train),nb_epoch=FLAGS.epochs,validation_data=(X_valid,y_valid),verbose=1)
-    # plothistory(history)
-    # compute quantities required for featurewise normalization
-    # (std, mean, and principal components if ZCA whitening is applied)
-    # datagen = ImageDataGenerator(
-    #     rotation_range=20,
-    #     width_shift_range=0.2,
-    #     height_shift_range=0.2,
-    #     )
-    # datagen.fit(X_train)
-
-    # fits the model on batches with real-time data augmentation:
-    # model.fit_generator(datagen.flow(X_train, y_train, batch_size=FLAGS.batch_size),
-    #                     steps_per_epoch=len(X_train), epochs=FLAGS.epochs)
-    model_no = 'model_III.h5'
-    model.save(model_no)
-    print("Model is saves as {}".format(model_no))
+    for i in range(FLAGS.epochs):
+        model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=5, batch_size=FLAGS.batch_size,verbose = 1)
+        model_no = 'model_I'+i+'.h5'
+        model.save(model_no)
+        print("Model is saves as {}".format(model_no))
 
 
 if __name__ == '__main__':
