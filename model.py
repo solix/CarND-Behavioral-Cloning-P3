@@ -152,7 +152,7 @@ def main(_):
 
     for i in range(1,FLAGS.epochs):
         model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model_no = 'model_R'+str(i)+'.h5'
+        model_no = 'model_W'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
 
