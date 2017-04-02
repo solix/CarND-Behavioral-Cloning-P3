@@ -199,8 +199,7 @@ def main(_):
     datagen = ImageDataGenerator(
             rotation_range=20,
             width_shift_range=0.2,
-            height_shift_range=0.2,
-            horizontal_flip=True)
+            height_shift_range=0.2)
     datagen.fit(X_train)
     for i in range(1,FLAGS.epochs):
         # model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
