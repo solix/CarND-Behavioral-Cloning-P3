@@ -10,12 +10,14 @@ from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./final_d/2track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./final_d/recover_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./final_d/valid_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
-imgs = []
-labels = []
+
 
 def loadRecoveryData():
-    #loading data given
+    #loading data
+    imgs = []
+    labels = []
     for  index, row in reader2.iterrows():
         for i in range(3):
             source =  row['center']
@@ -29,9 +31,6 @@ def loadRecoveryData():
         labels.append(steering)
         labels.append(steering + 0.25)
         labels.append(steering - 0.25)
-
-def loadfivelapsData():
-    #loading data given
     for  index, row in reader1.iterrows():
         for i in range(3):
             source =  row['center']
@@ -46,21 +45,28 @@ def loadfivelapsData():
         labels.append(steering + 0.25)
         labels.append(steering - 0.25)
 
-augmented_imgs = []
-augmented_steerings= []
+    return np.array(imgs),np.array(labels)
 
-def augmentAllWithFlippedImages():
-    # for  img, msr in zip(imgs,labels):
-    #     augmented_imgs.append(img)
-    #     augmented_steerings.append(msr)
-    #     flipped_image = np.fliplr(img)
-    #     augmented_imgs.append(flipped_image)
-    #     augmented_steerings.append(msr * -1.0)
-    X_train = np.array(imgs)
-    y_train = np.array(labels)
-    print(len(X_train), 'number of training data features')
-    print(len(y_train), 'number of training labeles')
-    return X_train,y_train
+
+def loadValidData():
+    #loading data given
+    imgs = []
+    labels = []
+    for  index, row in reader3.iterrows():
+        for i in range(3):
+            source =  row['center']
+            token = source.split('/')
+            local_path = './final_d/2track/IMG/'
+            file_path = token[-1]
+            local_path = local_path+file_path
+            img = cv2.imread(local_path)
+            imgs.append(img)
+        steering = float(row['steering'])
+        labels.append(steering)
+        labels.append(steering + 0.25)
+        labels.append(steering - 0.25)
+    return np.array(imgs),np.array(labels)
+
 
 # Model is inspired by nvidia cnn model with a different tweaks
 from keras.models import Sequential
@@ -83,19 +89,51 @@ flags.DEFINE_integer('batch_size', 256, "The batch size.")
 flags.DEFINE_float('learning_rate', 0.0001, "The batch size.")
 
 
-def generator(features, labels, batch_size=FLAGS.batch_size):
- # Create empty arrays to contain batch of features and labels#
- data = augmentAllWithFlippedImages()
- batch_features = np.zeros((batch_size,160,320,3))
- print("batch_feature shape is {}".format(batch_features.shape))
- batch_labels = np.zeros((batch_size))
- while True:
-   for i in range(batch_size):
-     #choose random index in features
-     index= random.choice(len(features),1)
-     batch_features[i] = features[index]
-     batch_labels[i] = labels[index]
-   yield batch_features.astype(np.float32), batch_labels
+# def train_generator(features, labels, batch_size=32):
+#
+#  # Create empty arrays to contain batch of features and labels#
+#
+#     batch_features = np.zeros((batch_size,160,320,3))
+#     print("batch_feature shape is {}".format(batch_features.shape))
+#     batch_labels = np.zeros((batch_size))
+#     datagen = ImageDataGenerator(
+#          rotation_range=20,
+#         width_shift_range=0.2,
+#         height_shift_range=0.2,
+#         horizontal_flip=True)
+#
+#     while True:
+#         for i in range(batch_size):
+#             #choose random index in features
+#             index= random.choice(len(features),1)
+#             batch_features[i] = features[index]
+#             batch_labels[i] = labels[index]
+#             datagen.fit(batch_features[i])
+#
+#         yield datagen
+
+
+# def train_generator(features, labels, batch_size=FLAGS.batch_size):
+#     # Create empty arrays to contain batch of features and labels#
+#
+#     batch_features = np.zeros((batch_size, 160, 320, 3))
+#     print("batch_feature shape is {}".format(batch_features.shape))
+#     batch_labels = np.zeros((batch_size))
+#     datagen = ImageDataGenerator(
+#         rotation_range=20,
+#         width_shift_range=0.2,
+#         height_shift_range=0.2,
+#         horizontal_flip=True)
+#
+#     while True:
+#         for i in range(batch_size):
+#             # choose random index in features
+#             index = random.choice(len(features), 1)
+#             batch_features[i] = features[index]
+#             batch_labels[i] = labels[index]
+#             datagen.fit(batch_features[i])
+#
+#     yield datagen
 
 def plothistory (history_object):
 
@@ -109,9 +147,8 @@ def plothistory (history_object):
     plt.show()
 
 def main(_):
-    loadfivelapsData()
-    loadRecoveryData()
-    X_train, y_train = augmentAllWithFlippedImages()
+    X_valid, y_valid = loadValidData()
+    X_train, y_train = loadRecoveryData()
     # inspired from Nvidia
     print('Build model...')
     model = Sequential()
@@ -119,23 +156,18 @@ def main(_):
     model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.05))
     model.add(Convolution2D(3, 5, 5,border_mode='valid', subsample=(2, 2)))
-    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(24, 5, 5, border_mode='valid',subsample=(2, 2)))
-    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(36, 5, 5, border_mode='valid',subsample=(2, 2)))
-    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(64, 3, 3,border_mode='valid'))
-    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(64, 3, 3,border_mode='valid', ))
-    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Flatten())
@@ -155,9 +187,15 @@ def main(_):
 
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
-
+    datagen = ImageDataGenerator(
+            rotation_range=20,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            horizontal_flip=True)
+    datagen.fit(X_train)
     for i in range(1,FLAGS.epochs):
-        model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
+        # model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
+        model.fit_generator(X_train,y_train,nb_epoch=i,samples_per_epoch=256*79 , validation_data=(X_valid,y_valid))
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
