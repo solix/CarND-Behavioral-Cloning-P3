@@ -24,12 +24,12 @@ def load_dataset(file_path):
     return dataset
 
 
-# def remove_unwanted_angels(dataset):
-#
-#     if (float(line[3]) > 0.98 or float(line[3]) < 0.98):
-#         continue
-#     if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
-#         continue
+def remove_unwanted_angels(dataset):
+
+    if (float(line[3]) > 0.98 or float(line[3]) < 0.98):
+        continue
+    if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
+        continue
 
 
 def plothistory (history_object):
@@ -53,6 +53,7 @@ def load_and_augment_image(image):
         # select a value between 0 and 2 to swith between center, left and right image
     index = np.random.randint(3)
 
+
     if (index == 0):
         image_file = image['left'].strip()
         angle_offset = 2
@@ -62,8 +63,8 @@ def load_and_augment_image(image):
     elif (index == 2):
         image_file = image['right'].strip()
         angle_offset = - 2
-    smooth_angel = moving_average(image['steering'],5)
-    steering_angle =  smooth_angel + angle_offset
+
+    steering_angle = image['steering'] + angle_offset
     # print(image_file)
     image = cv2.imread('./data/'+image_file)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
