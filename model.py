@@ -8,17 +8,13 @@ from sklearn.model_selection import train_test_split
 import preprocess
 
 
-reader1 = pd.read_csv('./5laps/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-
-
-
 
 def remove_unwanted_data_with_bad_angels(dataset):
     #lets remove unwanted angels see what happens
     for data in dataset:
         print(data['steering'])
         angel = data['steering']
-        if (angel > 0.80 or angel < 0.80):
+        if (angel > 0.9 or angel < 0.9):
             dataset.remove(data)
         elif np.math.isclose(angel, 0, abs_tol=0.001):
             dataset.remove(data)
@@ -156,15 +152,15 @@ def main(_):
     model.add(ELU())
     model.add(Flatten())
     model.add(Dense(1164))
-    # model.add(Dropout(0.2))
+    model.add(Dropout(0.2))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100))
-    # model.add(Dropout(0.5))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10))
-    # model.add(Dropout(0.75))
+    model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(1))
@@ -176,7 +172,7 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=1000,nb_epoch=1,validation_data=val_gen, nb_val_samples=len(X_validation))
+        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=1,validation_data=val_gen, nb_val_samples=len(X_validation))
         model_no = 'model_T'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
