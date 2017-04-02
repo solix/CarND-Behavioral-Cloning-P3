@@ -37,6 +37,9 @@ def load_dataset(file_path):
                 continue  # some images throw error during loading
     return dataset
 
+
+
+
 def plothistory (history_object):
 ### plot the training and validation loss for each epoch
     plt.plot(history_object.history['loss'])
@@ -153,15 +156,15 @@ def main(_):
     model.add(ELU())
     model.add(Flatten())
     model.add(Dense(1164))
-    model.add(Dropout(0.2))
+    # model.add(Dropout(0.2))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100))
-    model.add(Dropout(0.5))
+    # model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10))
-    model.add(Dropout(0.75))
+    # model.add(Dropout(0.75))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(1))
@@ -173,7 +176,7 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen, nb_val_samples=len(X_validation))
+        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=1,validation_data=val_gen, nb_val_samples=len(X_validation))
         model_no = 'model_T'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
