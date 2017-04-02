@@ -69,7 +69,6 @@ def load_and_augment_image(image):
 
     steering_angle = image['steering'] + angle_offset
     image_file = image_file.split('/')[-1]
-    print(image_file)
     image = cv2.imread('./track1/drive/IMG/'+image_file)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
