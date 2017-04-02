@@ -14,7 +14,7 @@ def remove_unwanted_data_with_bad_angels(dataset):
     for data in dataset:
         print(data['steering'])
         angel = data['steering']
-        if (angel > 0.9 or angel < 0.9):
+        if (angel > 0.80 or angel < 0.80):
             dataset.remove(data)
         elif np.math.isclose(angel, 0, abs_tol=0.001):
             dataset.remove(data)
@@ -70,7 +70,7 @@ def load_and_augment_image(image):
 
     steering_angle = image['steering'] + angle_offset
     # print(image_file)
-    image = cv2.imread('./5laps/'+image_file)
+    image = cv2.imread('./data/'+image_file)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
 
@@ -93,7 +93,7 @@ def generator_batch(dataset,batch_size=32):
 
 
 #load data and split to train and validation
-fila_path = './5laps/driving_log.csv'
+fila_path = './data/driving_log.csv'
 dataset = load_dataset(fila_path)
 dataset = remove_unwanted_data_with_bad_angels(dataset)
 print("Loaded {} samples from file {}".format(len(dataset), fila_path))
