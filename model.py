@@ -8,7 +8,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
-reader1 = pd.read_csv('./final_d/2track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader1 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./final_d/recover_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader3 = pd.read_csv('./valid_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
@@ -35,7 +35,7 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './final_d/2track/IMG/'
+            local_path = './data/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
