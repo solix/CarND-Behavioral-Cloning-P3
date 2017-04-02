@@ -69,7 +69,7 @@ def load_and_augment_image(image):
 
     steering_angle = image['steering'] + angle_offset
     image_file = image_file.split('/')[-1]
-    image = cv2.imread('./5laps/IMG/'+image_file)
+    image = cv2.imread('./data/IMG/'+image_file)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
@@ -93,7 +93,7 @@ def generator_batch(dataset,batch_size=32):
 
 
 #load data and split to train and validation
-fila_path = './5laps/driving_log.csv'
+fila_path = './data/driving_log.csv'
 dataset = load_dataset(fila_path)
 dataset = remove_unwanted_data_with_bad_angels(dataset)
 print("Loaded {} samples from file {}".format(len(dataset), fila_path))
