@@ -138,7 +138,7 @@ def main(_):
     model.add(Dropout(0.75))
     # model.add(BatchNormalization())
     model.add(ELU())
-    model.add(Dense(1) , name='output')
+    model.add(Dense(1))
 
     model.compile(loss='mse', optimizer=Adam(lr=FLAGS.learning_rate))
     print("Model summary:\n", model.summary())
