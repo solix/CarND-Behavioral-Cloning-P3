@@ -195,7 +195,7 @@ def main(_):
     datagen.fit(X_train)
     for i in range(1,FLAGS.epochs):
         # model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(X_train,y_train,nb_epoch=i,samples_per_epoch=256*79 , validation_data=(X_valid,y_valid))
+        model.fit_generator(X_train,y_train,nb_epoch=i,samples_per_epoch=FLAGS.batch_size , validation_data=(X_valid,y_valid))
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
