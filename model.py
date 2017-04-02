@@ -18,7 +18,7 @@ def remove_unwanted_data_with_bad_angels(dataset):
     for data in dataset:
         print(data['steering'])
         angel = data['steering']
-        if (angel > 0.98 or angel < 0.98):
+        if (angel > 0.80 or angel < 0.80):
             dataset.remove(data)
         elif np.math.isclose(angel, 0, abs_tol=0.001):
             dataset.remove(data)
