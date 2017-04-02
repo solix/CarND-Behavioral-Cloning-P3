@@ -128,7 +128,7 @@ def main(_):
     model.add(Convolution2D(36, 5, 5, border_mode='valid',subsample=(2, 2)))
     # model.add(BatchNormalization())
     model.add(ELU())
-    # model.add(Convolution2D(64, 3, 3,border_mode='valid'))
+    model.add(Convolution2D(64, 3, 3,border_mode='valid'))
     # model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(64, 3, 3,border_mode='valid', ))
