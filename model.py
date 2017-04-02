@@ -12,7 +12,6 @@ import preprocess
 def remove_unwanted_data_with_bad_angels(dataset):
     #lets remove unwanted angels see what happens
     for data in dataset:
-        print(data['steering'])
         angel = data['steering']
         if (angel > 0.80 or angel < 0.80):
             dataset.remove(data)
@@ -69,9 +68,9 @@ def load_and_augment_image(image):
         angle_offset = - 2
 
     steering_angle = image['steering'] + angle_offset
-    # print(image_file)
-    image = cv2.imread('./track1/drive/'+image_file)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    print(image_file)
+    image = cv2.imread('./drive/'+image_file)
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
 
