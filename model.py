@@ -23,13 +23,13 @@ def load_dataset(file_path):
                 continue  # some images throw error during loading
     return dataset
 
-
-def remove_unwanted_angels(dataset):
-
-    if (float(line[3]) > 0.98 or float(line[3]) < 0.98):
-        continue
-    if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
-        continue
+#
+# def remove_unwanted_angels(dataset):
+#
+#     if (float(line[3]) > 0.98 or float(line[3]) < 0.98):
+#         continue
+#     if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
+#         continue
 
 
 def plothistory (history_object):
