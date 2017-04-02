@@ -57,7 +57,7 @@ def load_and_augment_image(image):
     return image, steering_angle
 
 def generator_batch(dataset,batchsize=32):
-    batch_images = np.zeros(batchsize,160,320,3)
+    batch_images = np.zeros(160,320,3)
     batch_labels=np.zeros(batchsize)
     while True:
         for batch in range(batchsize):
