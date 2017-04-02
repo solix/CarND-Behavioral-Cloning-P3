@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 
 reader1 = pd.read_csv('./final_d/2track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 reader2 = pd.read_csv('./final_d/recover_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader3 = pd.read_csv('./final_d/valid_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader3 = pd.read_csv('./valid_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 
 
