@@ -22,6 +22,7 @@ def remove_unwanted_data_with_bad_angels(dataset):
             dataset.remove(data)
         elif np.math.isclose(angel, 0, abs_tol=0.001):
             dataset.remove(data)
+    return dataset
 
 #load csv file and append it to dataset
 def load_dataset(file_path):
@@ -34,7 +35,7 @@ def load_dataset(file_path):
                                 'throttle': float(line[4]), 'brake': float(line[5]), 'speed': float(line[6])})
             except:
                 continue  # some images throw error during loading
-    return remove_unwanted_data_with_bad_angels(dataset)
+    return dataset
 
 def plothistory (history_object):
 ### plot the training and validation loss for each epoch
@@ -95,6 +96,7 @@ def generator_batch(dataset,batch_size=32):
 #load data and split to train and validation
 fila_path = './data/driving_log.csv'
 dataset = load_dataset(fila_path)
+dataset = remove_unwanted_data_with_bad_angels(dataset)
 print("Loaded {} samples from file {}".format(len(dataset), fila_path))
 print("\nPartitioning the dataset ...")
 shuffle(dataset)
