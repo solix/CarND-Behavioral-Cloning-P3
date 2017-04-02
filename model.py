@@ -56,15 +56,21 @@ def load_and_augment_image(image):
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
 
-def generator_batch(dataset,batchsize=32):
-    batch_images = np.zeros((batchsize,160,320,3))
-    batch_labels=np.zeros(batchsize)
+def generator_batch(dataset,batch_size=32):
+    # Create empty arrays to contain batch of features and labels#
+    batch_features = np.zeros((batch_size, 160, 320, 3))
+    print("batch_feature shape is {}".format(batch_features.shape))
+    batch_labels = np.zeros((batch_size, 1))
     while True:
-        for batch in range(batchsize):
-            line_data = dataset.iloc[[np.randint(len(dataset))]].reset_index()
-            img , str = load_and_augment_image(line_data)
-            batch_images[batch] =img
-            batch_labels[batch]=str
+        for i in range(batch_size):
+            # select a random image from the dataset
+            image_index = np.random.randint(len(dataset))
+            image_data = dataset[image_index]
+            feature, label = load_and_augment_image(image_data)
+            # choose random index in features
+            batch_features[i] = feature
+            batch_labels[i] = label
+        yield batch_features, batch_labels
     yield batch_images,batch_labels
 
 
@@ -147,7 +153,7 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(1,FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i)
+        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen,nb_val_samples=len(X_validation))
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
