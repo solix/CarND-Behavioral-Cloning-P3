@@ -197,7 +197,7 @@ def main(_):
         # model.fit(X_train, y_train, validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
         # fits the model on batches with real-time data augmentation:
         model.fit_generator(datagen.flow(X_train, y_train, batch_size=32),
-                            steps_per_epoch=len(X_train), epochs=i)
+                            samples_per_epoch=len(X_train), nb_epoch=i)
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
