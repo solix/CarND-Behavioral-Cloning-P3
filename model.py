@@ -17,6 +17,11 @@ def load_dataset(file_path):
         reader = csv.reader(csvfile)
         for line in reader:
             try:
+                if(float(line[3]) > 0.98 or float(line[3]) < 0.98):
+                    continue
+                if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
+                    continue
+
                 dataset.append({'center': line[0], 'left': line[1], 'right': line[2], 'steering': float(line[3]),
                                 'throttle': float(line[4]), 'brake': float(line[5]), 'speed': float(line[6])})
             except:
@@ -50,10 +55,10 @@ def load_and_augment_image(image):
     elif (index == 2):
         image_file = image['right'].strip()
         angle_offset = - 2
+
     steering_angle = image['steering'] + angle_offset
     # print(image_file)
     image = cv2.imread('./data/'+image_file)
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
 
