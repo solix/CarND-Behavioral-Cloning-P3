@@ -61,7 +61,6 @@ def generator_batch(dataset,batchsize=32):
     batch_labels=np.zeros(batchsize)
     while True:
         for batch in range(batchsize):
-            random_data = dataset.iloc[[np.random.randint(len(dataset))]].reset_index()
             img , str = load_and_augment_image(random_data)
             batch_images[batch] =img
             batch_labels[batch]=str
