@@ -159,7 +159,7 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(1,FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen)
+        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen, nb_val_samples=len(X_validation))
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
