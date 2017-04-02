@@ -16,7 +16,7 @@ reader1 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'righ
 def remove_unwanted_data_with_bad_angels(dataset):
     #lets remove unwanted angels see what happens
     for data in dataset:
-        angel = dataset[data]['steering']
+        angel = dataset[data][3]
         if (angel > 0.98 or angel < 0.98):
             dataset.remove(data)
         elif np.math.isclose(angel, 0, abs_tol=0.001):
