@@ -17,11 +17,6 @@ def load_dataset(file_path):
         reader = csv.reader(csvfile)
         for line in reader:
             try:
-                if(float(line[3]) > 0.98 or float(line[3]) < 0.98):
-                    continue
-                if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
-                    continue
-
                 dataset.append({'center': line[0], 'left': line[1], 'right': line[2], 'steering': float(line[3]),
                                 'throttle': float(line[4]), 'brake': float(line[5]), 'speed': float(line[6])})
             except:
@@ -46,6 +41,8 @@ def plothistory (history_object):
 def load_and_augment_image(image):
         # select a value between 0 and 2 to swith between center, left and right image
     index = np.random.randint(3)
+
+
     if (index == 0):
         image_file = image['left'].strip()
         angle_offset = 2
@@ -159,7 +156,7 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(1,FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen, nb_val_samples=50)
+        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=i,validation_data=val_gen, nb_val_samples=len(X_validation))
         model_no = 'model_M'+str(i)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
