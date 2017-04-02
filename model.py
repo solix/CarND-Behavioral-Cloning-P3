@@ -10,6 +10,17 @@ import preprocess
 
 reader1 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
+
+
+
+def remove_unwanted_data_with_bad_angels(dataset):
+    #lets remove unwanted angels see what happens
+    for data in dataset:
+        if (data['steering'] > 0.98 or data['steering'] < 0.98):
+            dataset.remove(data)
+        elif np.math.isclose(data['steering'], 0, abs_tol=0.001):
+            dataset.remove(data)
+
 #load csv file and append it to dataset
 def load_dataset(file_path):
     dataset = []
@@ -21,16 +32,7 @@ def load_dataset(file_path):
                                 'throttle': float(line[4]), 'brake': float(line[5]), 'speed': float(line[6])})
             except:
                 continue  # some images throw error during loading
-    return dataset
-
-#
-# def remove_unwanted_angels(dataset):
-#
-#     if (float(line[3]) > 0.98 or float(line[3]) < 0.98):
-#         continue
-#     if np.math.isclose(float(line[3]), 0, abs_tol=0.001):
-#         continue
-
+    return remove_unwanted_data_with_bad_angels(dataset)
 
 def plothistory (history_object):
 ### plot the training and validation loss for each epoch
