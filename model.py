@@ -44,6 +44,7 @@ def loadRecoveryData():
         labels.append(steering)
         labels.append(steering + 0.25)
         labels.append(steering - 0.25)
+
     aug_imgs=[]
     aug_labels=[]
 
@@ -52,7 +53,7 @@ def loadRecoveryData():
         aug_labels.append(label)
         img= np.fliplr(img)
         aug_imgs.append(img)
-        aug_labels.append(labels)
+        aug_labels.append(label)
 
     return np.array(aug_imgs),np.array(aug_labels)
 
