@@ -8,8 +8,8 @@ from keras.preprocessing.image import ImageDataGenerator
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
-reader1 = pd.read_csv('./data/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
-reader2 = pd.read_csv('./counter/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader1 = pd.read_csv('./final_d/2track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
+reader2 = pd.read_csv('./final_d/recover_track/driving_log.csv', usecols=['center', 'left', 'right', 'steering'])
 
 imgs = []
 labels = []
@@ -20,7 +20,7 @@ def loadRecoveryData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './counter/IMG/'
+            local_path = './final_d/recover_track/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -36,7 +36,7 @@ def loadfivelapsData():
         for i in range(3):
             source =  row['center']
             token = source.split('/')
-            local_path = './data/IMG/'
+            local_path = './final_d/2track/IMG/'
             file_path = token[-1]
             local_path = local_path+file_path
             img = cv2.imread(local_path)
@@ -119,9 +119,11 @@ def main(_):
     model.add(Cropping2D(cropping=((70,20), (0, 0))))  # also supports shape inference using `-1` as dimension
     model.add(GaussianNoise(sigma=0.05))
     model.add(Convolution2D(3, 5, 5,border_mode='valid', subsample=(2, 2)))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(24, 5, 5, border_mode='valid',subsample=(2, 2)))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Convolution2D(36, 5, 5, border_mode='valid',subsample=(2, 2)))
@@ -138,13 +140,15 @@ def main(_):
     model.add(ELU())
     model.add(Flatten())
     model.add(Dense(1164))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(100))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(10))
-    # model.add(Dropout(0.5))
+    model.add(Dropout(0.5))
     model.add(BatchNormalization())
     model.add(ELU())
     model.add(Dense(1))
