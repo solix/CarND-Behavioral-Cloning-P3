@@ -6,6 +6,8 @@ import tensorflow as tf
 from random import shuffle
 from sklearn.model_selection import train_test_split
 import preprocess
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 
@@ -59,17 +61,17 @@ def load_and_augment_image(image):
 
     if (index == 0):
         image_file = image['left'].strip()
-        angle_offset = 2
+        angle_offset = .2
     elif (index == 1):
         image_file = image['center'].strip()
         angle_offset = 0.
     elif (index == 2):
         image_file = image['right'].strip()
-        angle_offset = - 2
+        angle_offset = - .2
 
     steering_angle = image['steering'] + angle_offset
     image_file = image_file.split('/')[-1]
-    image = cv2.imread('./data/IMG/'+image_file)
+    image = mpimg.imread('./data/IMG/'+image_file)
     # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image, steering_angle = preprocess.random_transform(image, steering_angle)
     return image, steering_angle
@@ -89,7 +91,7 @@ def generator_batch(dataset,batch_size=32):
             batch_features[i] = feature
             batch_labels[i] = label
         yield batch_features, batch_labels
-    yield batch_images,batch_labels
+    # yield batch_images,batch_labels
 
 
 #load data and split to train and validation
@@ -115,8 +117,8 @@ from keras.layers.noise import GaussianNoise
 # define flags for epoch and batchsize
 from keras import backend as K
 from keras.layers.advanced_activations import ELU
-from keras.regularizers import l2, activity_l2
-import matplotlib.pyplot as plt
+from keras.regularizers import l2
+
 
 
 flags = tf.app.flags
@@ -172,8 +174,9 @@ def main(_):
     val_gen = generator_batch(X_validation)
     for i in range(FLAGS.epochs):
         # model.fit([], [], validation_split=0.3, shuffle=True, nb_epoch=i, batch_size=FLAGS.batch_size,verbose = 1)
-        model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=1,validation_data=val_gen, nb_val_samples=len(X_validation))
-        model_no = 'model_T'+str(i)+'.h5'
+        # model.fit_generator(training_gen,samples_per_epoch=len(X_train),nb_epoch=1,validation_data=val_gen, nb_val_samples=len(X_validation))
+        model.fit_generator(training_gen, validation_data=val_gen, epochs=1, steps_per_epoch=1000, validation_steps=800)
+        model_no = 'model_X'+str(i+1)+'.h5'
         model.save(model_no)
         print("Model is saves as {}".format(model_no))
 
