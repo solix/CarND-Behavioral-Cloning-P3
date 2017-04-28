@@ -29,18 +29,18 @@ My project includes the following files:
 
 * `model.py` containing the script to create and train the model
 * `drive.py` for driving the car in autonomous mode
-* `model_X12.h5` containing a trained convolution neural network 
+* `model.h5` containing a trained convolution neural network 
 * `writeup.md`  summarizing the results
 
 ####2. Submission includes functional code
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
-python drive.py model_X6.h5
+python drive.py model.h5
 ```
 
 ####3. Submission code is usable and readable
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+The `model.py` file contains the code for training and saving the convolution neural network per epochs. between line  `12` through `85` couple 
 
 ###Model Architecture and Training Strategy
 
@@ -119,3 +119,13 @@ After the collection process, I had X number of data points. I then preprocessed
 I finally randomly shuffled the data set and put Y% of the data into a validation set. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+
+#####4. Video Result
+
+Here's a [link to my video result](./run1.mp4)
+
+<iframe width="350" height="315" src="./run1.mp4" frameborder="0" ></iframe>
+
+
+#####5. Improvemenets
