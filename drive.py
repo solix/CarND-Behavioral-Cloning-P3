@@ -22,6 +22,7 @@ prev_image_array = None
 
 
 class SimplePIController:
+
     def __init__(self, Kp, Ki):
         self.Kp = Kp
         self.Ki = Ki
@@ -60,7 +61,8 @@ def telemetry(sid, data):
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
         image_array = np.asarray(image)
-        steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
+        steering_angle = float(model.predict(
+            image_array[None, :, :, :], batch_size=1))
 
         throttle = controller.update(float(speed))
 
