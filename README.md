@@ -1,4 +1,4 @@
-#**Behavioral Cloning** 
+# **Behavioral Cloning** 
 
 
 **Behavioral Cloning Project report by soheil jahanshahi**
@@ -21,9 +21,9 @@ The goals / steps of this project are the following:
 [image6]: ./examples/center.jpg "center Image"
 
 
-###Files Submitted & Code Quality
+### Files Submitted & Code Quality
 
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
 
@@ -32,7 +32,7 @@ My project includes the following files:
 * `model.h5` containing a trained convolution neural network 
 * `writeup.md`  summarizing the results
 
-####2. Submission includes functional code
+#### 2. Submission includes functional code
 Using the Udacity provided simulator and my `drive.py` file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
@@ -42,10 +42,10 @@ and to train the model by yourself you can execute command like this
 ```sh 
 python model.py --epochs 12  --learning_rate 0.0001
 ```
-####3. Submission code is usable and readable
+#### 3. Submission code is usable and readable
 The `model.py` contains file for data preparation, preprocessing and training the model. It has comments where necessary and the code is formatted so that is readable easily.
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 The `model.py` file contains the code for generating data in realtime between line  `12` through `85`. Function `generator_batch` load and augment data in batches so to avoid storing the data in to memory.
 Also during data generation to I select random index from dataset list to avoid overfitting.
 
@@ -64,7 +64,7 @@ Obviously above strategy was not achieved at once, I made various experimentatio
 
 Last note before we dive into the model is that I have used data provided by Udacity and modified steering angles for left and right images with offset value of `-/+ 0.2`. 
 
-####1. An appropriate model architecture has been employed
+#### 1. An appropriate model architecture has been employed
 
 You can find the model architecture in `model.py` lines `126`-`170`.
 
@@ -74,24 +74,24 @@ My model uses 5 convolutional layers followed by 5 fully connected layers. I hav
 
 The model includes `ELU` layers to introduce nonlinearity (code line 20), and the data is normalised in the model using a Keras lambda layer (for example ta a look at code in line 133). I chose `ELU` after reading [Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs)](https://arxiv.org/abs/1511.07289) paper. In the paper it claimed that `ELU` will speeds up learning in deep neural networks and leads to higher classification accuracies, this activation function also give a better non-linear output activation for the next layer in the network to train.
 
-####2. Attempts to reduce overfitting in the model
+#### 2. Attempts to reduce overfitting in the model
  To avoid overfitting I first shuffle the dataset so that orders changes , in `generator_batch` line `80` I choose a random image and append it to the dataset that is batched. but this is not enough for avoiding overfitting. The model contains dropout with value `0.20` for all fully connected layers except the one last in order to reduce overfitting (`model.py` lines `156` to `165`). 
 
 The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
-####3. Model parameter tuning
+#### 3. Model parameter tuning
 
 The model used an Adam optimiser, so the learning rate was not tuned manually (model.py line 25).
 
-####4. Appropriate training data
+#### 4. Appropriate training data
 
 Training data was chosen to keep the vehicle driving on the road. I used a combination of centre lane driving, recovering from the left and right sides of the road. I load the dataset path images in to an array using `load_dataset` function and then used `load_and_augment_image` to add data for centre, left and right camera with their offset for their corresponding steering angle. For offset I choose a bias value of `0.2`,`0`,`-0.2` for left, center and right images respectively, that will give us even more data to train.
 
 Before model is fed into the network, couple of preprocessing steps has been taken to ensure that data is balanced. Function `remove_unwanted_data_with_bad_angels` (sorry for the typo for the word angels ;)) in line `12` in `model.py` removes unwanted data which has bad angles. I mean by bad angels here that there are either a angle with values higher or lower than `.80` or is close to `0` with tolerance absolute value of `0.001` (I used `np.math.isclose` from numpy library for removing zero angles with specific tolerance rate).
 
-###Model Architecture and Training Strategy
+### Model Architecture and Training Strategy
 
-####1. Solution Design Approach
+#### 1. Solution Design Approach
 
 The overall strategy for deriving a model architecture was to train a model to predict steering angles for car to drive in simulator. Using deep learning models which are already indicated a good result was a good starting point.
 
@@ -101,7 +101,7 @@ I then started by doing a little bit research to see if I can use already existi
 
 I applied normalisation to have zero-centred mean for each data and I used cropping inside the model removing down part of image make it easier for the network to look for interesting features.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set using `sklearn.. I then applied generator to create batch features and batch labels for both training and validation data.
+In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I then applied generator to create batch features and batch labels for both training and validation data.
 
 To combat the overfitting, I modified the model so that on each densed layer it used `dropout =0.2` as one of the regularisation techniques for neural network. 
 
@@ -115,12 +115,12 @@ The final step was to run the simulator to see how well the car was driving arou
 
  At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road with maximum speed of 12.
 
-####2. Final Model Architecture
+#### 2. Final Model Architecture
 
 The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes. Here is a visualization of the architecture.
 ![alt text][image1]
 
-####3. Creation of the Training Set & Training Process
+#### 3. Creation of the Training Set & Training Process
 
 I first started by gathering my own data , but that ended up being a bad data, since I could not capture smooth turns (just a bad gamer) and model did not like it at all during training(giving less accurate predictions), then I switched to Udacity dataset thats when things started to work.
   
@@ -131,7 +131,7 @@ here are some images of my recorded images (that I ended up not using):
 ![alt text][image6]
 
 
-After the collection process, and loading which I Explained earlier. I finally randomly shuffled the data set and put 20% of the data into a validation set, in the end i had:
+After the data collection process, and loading which I Explained earlier. I finally randomly shuffled the data set and put 20% of the data into a validation set, in the end i had:
 
  ![alt text][image3]
 
@@ -140,7 +140,7 @@ I used this training data for training the model. The validation set helped dete
  ![alt text][image2]
 
 
-####4. Video Result
+#### 4. Video Result
 
 Here's a [video link to result](./run1.mp4) created using `video.py` file.
 
@@ -149,7 +149,7 @@ Here's a [video link to result](./run1.mp4) created using `video.py` file.
 
 
 
-####5. Improvemenets
+#### 5. Improvemenets
 
 The car successfully can drive on track 1 but fails to drive on challange track, in case I have more time to work on this project, these are follwing recommandations I will suggest to implement:
 
