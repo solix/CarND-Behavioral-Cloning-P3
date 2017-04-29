@@ -96,7 +96,7 @@ ENV/
 # Rope project settings
 .ropeproject
 __MACOSX/data/IMG/
-model.h5
+
 .idea/
 /data/
 /my_data/
